@@ -46,6 +46,8 @@ import com.github.tojo.cookies.PayloadSigner;
  */
 class PayloadCipherAndSignerDefaultImpl implements PayloadCipher, PayloadSigner {
 
+	private static final String UTF_8 = "UTF-8";
+
 	private static final String HMAC_SHA1 = "HmacSHA1";
 
 	// TODO: externalize into config
@@ -55,39 +57,24 @@ class PayloadCipherAndSignerDefaultImpl implements PayloadCipher, PayloadSigner 
 	private static final String SHA_256 = "SHA-256";
 	private static final String AES_ECB_PKCS5PADDING = "AES/ECB/PKCS5PADDING";
 
-	/**
-	 * @see com.github.tojo.cookies.PayloadCipher#encipher(byte[])
-	 */
 	public byte[] encipher(byte[] rawPayload) {
 		return encryptOrDecryptPayload(rawPayload, Cipher.ENCRYPT_MODE);
 	}
 
-	/**
-	 * @see com.github.tojo.cookies.PayloadCipher#decipher(byte[])
-	 */
 	public byte[] decipher(byte[] encryptedPayload) {
 		return encryptOrDecryptPayload(encryptedPayload, Cipher.DECRYPT_MODE);
 	}
 
-	/**
-	 * @see com.github.tojo.cookies.PayloadCipher#sign(byte[])
-	 */
 	public byte[] sign(byte[] payload) {
 		byte[] signature = null;
 		try {
-			Key key = buildKey(SECRET_KEY_BASE.getBytes("UTF-8"), HMAC_SHA1);
+			Key key = buildKey(SECRET_KEY_BASE.getBytes(UTF_8), HMAC_SHA1);
 			Mac mac = Mac.getInstance(HMAC_SHA1);
 			mac.init(key);
 			signature = mac.doFinal(payload);
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException
+				| InvalidKeyException e) {
+			throw new RuntimeException(e);
 		}
 		return signature;
 	}
@@ -103,10 +90,6 @@ class PayloadCipherAndSignerDefaultImpl implements PayloadCipher, PayloadSigner 
 		validateSignature(payload, signature);
 	}
 
-	/**
-	 * @see com.github.tojo.cookies.PayloadCipher#validateSignature(byte[],
-	 *      byte[])
-	 */
 	public void validateSignature(byte[] payload, byte[] signature)
 			throws InvalidSignatureOrTamperedPayloadException {
 		if (signature == null || signature.length != 20) {
@@ -114,13 +97,12 @@ class PayloadCipherAndSignerDefaultImpl implements PayloadCipher, PayloadSigner 
 		}
 		byte[] newSignature = sign(payload);
 		try {
-			if (!new String(newSignature, "UTF-8").equals(new String(signature,
-					"UTF-8"))) {
+			if (!new String(newSignature, UTF_8).equals(new String(signature,
+					UTF_8))) {
 				throw new InvalidSignatureOrTamperedPayloadException();
 			}
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new RuntimeException(e);
 		}
 	}
 
@@ -141,27 +123,13 @@ class PayloadCipherAndSignerDefaultImpl implements PayloadCipher, PayloadSigner 
 		byte[] outputPayload = null;
 		try {
 			Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
-			Key secretKey = buildKey(SECRET_KEY_BASE.getBytes("UTF-8"), AES);
+			Key secretKey = buildKey(SECRET_KEY_BASE.getBytes(UTF_8), AES);
 			cipher.init(mode, secretKey);
 			outputPayload = cipher.doFinal(inputPayload);
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException
+				| UnsupportedEncodingException | InvalidKeyException
+				| IllegalBlockSizeException | BadPaddingException e) {
+			new RuntimeException(e);
 		}
 		return outputPayload;
 	}
