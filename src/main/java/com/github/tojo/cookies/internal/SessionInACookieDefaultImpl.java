@@ -35,16 +35,21 @@ import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.github.tojo.cookies.InvalidSignatureOrTamperedPayloadException;
 import com.github.tojo.cookies.PayloadCipher;
+import com.github.tojo.cookies.PayloadDecoder;
 import com.github.tojo.cookies.PayloadSigner;
 
 /**
- * Default implementation of {@link PayloadCipher} and {@link PayloadSigner}.
+ * Default implementation of {@link PayloadCipher}, {@link PayloadSigner} and
+ * {@link PayloadDecoder}.
  * 
  * @author github.com/tojo
  */
-class PayloadCipherAndSignerDefaultImpl implements PayloadCipher, PayloadSigner {
+class SessionInACookieDefaultImpl implements PayloadCipher, PayloadSigner,
+		PayloadDecoder {
 
 	private static final String UTF_8 = "UTF-8";
 
@@ -57,14 +62,17 @@ class PayloadCipherAndSignerDefaultImpl implements PayloadCipher, PayloadSigner 
 	private static final String SHA_256 = "SHA-256";
 	private static final String AES_ECB_PKCS5PADDING = "AES/ECB/PKCS5PADDING";
 
+	@Override
 	public byte[] encipher(byte[] rawPayload) {
 		return encryptOrDecryptPayload(rawPayload, Cipher.ENCRYPT_MODE);
 	}
 
+	@Override
 	public byte[] decipher(byte[] encryptedPayload) {
 		return encryptOrDecryptPayload(encryptedPayload, Cipher.DECRYPT_MODE);
 	}
 
+	@Override
 	public byte[] sign(byte[] payload) {
 		byte[] signature = null;
 		try {
@@ -79,6 +87,7 @@ class PayloadCipherAndSignerDefaultImpl implements PayloadCipher, PayloadSigner 
 		return signature;
 	}
 
+	@Override
 	public void validateSignature(byte[] signatureAndPayload)
 			throws InvalidSignatureOrTamperedPayloadException {
 		byte[] payload = new byte[signatureAndPayload.length - 20];
@@ -90,6 +99,7 @@ class PayloadCipherAndSignerDefaultImpl implements PayloadCipher, PayloadSigner 
 		validateSignature(payload, signature);
 	}
 
+	@Override
 	public void validateSignature(byte[] payload, byte[] signature)
 			throws InvalidSignatureOrTamperedPayloadException {
 		if (signature == null || signature.length != 20) {
@@ -104,6 +114,16 @@ class PayloadCipherAndSignerDefaultImpl implements PayloadCipher, PayloadSigner 
 		} catch (UnsupportedEncodingException e) {
 			new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public byte[] encodeBase64(byte[] rawPayload) {
+		return Base64.encodeBase64(rawPayload);
+	}
+
+	@Override
+	public byte[] decodeBase64(byte[] base64EncodedPayload) {
+		return Base64.decodeBase64(base64EncodedPayload);
 	}
 
 	// /////////////////////////////////////////////////

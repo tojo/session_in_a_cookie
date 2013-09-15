@@ -11,13 +11,13 @@ import com.github.tojo.cookies.InvalidSignatureOrTamperedPayloadException;
 
 public class PayloadCipherDefaultImplTest {
 
-	static PayloadCipherAndSignerDefaultImpl sut;
+	static SessionInACookieDefaultImpl sut;
 	static byte[] samplePayloadLoremIpsum;
 	static byte[] samplePayloadFooBar;
 
 	@BeforeClass
 	public static void setup() throws Exception {
-		sut = new PayloadCipherAndSignerDefaultImpl();
+		sut = new SessionInACookieDefaultImpl();
 		samplePayloadLoremIpsum = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
 				.getBytes("UTF-8");
 		samplePayloadFooBar = "Foo bar!".getBytes("UTF-8");

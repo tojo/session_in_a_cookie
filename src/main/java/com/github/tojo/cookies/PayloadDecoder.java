@@ -23,38 +23,26 @@
 package com.github.tojo.cookies;
 
 /**
- * Methods to create and verify signatures. This is useful to check the data
- * integrity and make sure that the payload is unchanged.
+ * Methods to encode payload to and decode payload from base64.
  * 
- * @author github.com/tojo
+ * @author github.com/tjoch
  */
-public interface PayloadSigner {
+public interface PayloadDecoder {
 
 	/**
-	 * Calculates a signature for the given payload.
+	 * This method encodes the given payload in the base64 format.
 	 * 
-	 * @param payload
-	 * @return The signature.
+	 * @param rawPayload
+	 * @return The encoded payload
 	 */
-	byte[] sign(byte[] payload);
+	byte[] encodeBase64(byte[] rawPayload);
 
 	/**
-	 * Extracts the first 20 bytes of the payload as signature and validates the
-	 * payload with it.
+	 * This method decodes the given payload from the base64 format.
 	 * 
-	 * @param signatureAndPayload
-	 * @throws InvalidSignatureOrTamperedPayloadException
+	 * @param base64EncodedPayload
+	 * @return The decoded payload.
 	 */
-	void validateSignature(byte[] signatureAndPayload)
-			throws InvalidSignatureOrTamperedPayloadException;
+	byte[] decodeBase64(byte[] base64EncodedPayload);
 
-	/**
-	 * Validates the payload with the given signature.
-	 * 
-	 * @param payload
-	 * @param signature
-	 * @throws InvalidSignatureOrTamperedPayloadException
-	 */
-	void validateSignature(byte[] payload, byte[] signature)
-			throws InvalidSignatureOrTamperedPayloadException;
 }
