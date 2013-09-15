@@ -23,48 +23,27 @@
 package com.github.tojo.cookies;
 
 /**
- * Methods to create and verify signatures. This is useful to check the data
- * integrity and make sure that the payload is unchanged.
+ * Helper methods for implementing the session-in-a-cookie pattern.
  * 
  * @author github.com/tojo
  */
-public interface PayloadSigner {
+public interface SessionInACookie {
 
 	/**
-	 * Calculates a signature for the given payload.
+	 * Encrypts, sign and base64 encodes the payload.
 	 * 
-	 * @param payload
-	 * @return The signature.
+	 * @param rawPayload
+	 * @return The encrypted, signed and base64 encoded payload.
 	 */
-	byte[] sign(byte[] payload);
+	byte[] encryptSignAndEncode(byte[] rawPayload);
 
 	/**
-	 * Calculates a signature for the given payload and prefix the payload with
-	 * it.
+	 * Decodes from base64, validates signature and decrypt the payload.
 	 * 
-	 * @param payload
-	 * @return The signature + payload.
-	 */
-	byte[] signAndPrefix(byte[] payload);
-
-	/**
-	 * Extracts the first 20 bytes of the payload as signature and validates the
-	 * payload with it.
-	 * 
-	 * @param signatureAndPayload
-	 * @return The valid payload without the signature.
+	 * @param encryptedAndSignedPayload
+	 * @return The raw payload.
 	 * @throws InvalidSignatureOrTamperedPayloadException
 	 */
-	byte[] validateSignature(byte[] signatureAndPayload)
-			throws InvalidSignatureOrTamperedPayloadException;
-
-	/**
-	 * Validates the payload with the given signature.
-	 * 
-	 * @param payload
-	 * @param signature
-	 * @throws InvalidSignatureOrTamperedPayloadException
-	 */
-	void validateSignature(byte[] payload, byte[] signature)
+	byte[] decodeDecryptAndVerifySignature(byte[] encryptedAndSignedPayload)
 			throws InvalidSignatureOrTamperedPayloadException;
 }

@@ -27,6 +27,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -41,15 +42,16 @@ import com.github.tojo.cookies.InvalidSignatureOrTamperedPayloadException;
 import com.github.tojo.cookies.PayloadCipher;
 import com.github.tojo.cookies.PayloadDecoder;
 import com.github.tojo.cookies.PayloadSigner;
+import com.github.tojo.cookies.SessionInACookie;
 
 /**
- * Default implementation of {@link PayloadCipher}, {@link PayloadSigner} and
- * {@link PayloadDecoder}.
+ * Default implementation of {@link SessionInACookie}, {@link PayloadCipher},
+ * {@link PayloadSigner} and {@link PayloadDecoder}.
  * 
  * @author github.com/tojo
  */
-class SessionInACookieDefaultImpl implements PayloadCipher, PayloadSigner,
-		PayloadDecoder {
+class SessionInACookieDefaultImpl implements SessionInACookie, PayloadCipher,
+		PayloadSigner, PayloadDecoder {
 
 	private static final String UTF_8 = "UTF-8";
 
@@ -61,6 +63,38 @@ class SessionInACookieDefaultImpl implements PayloadCipher, PayloadSigner,
 	private static final String AES = "AES";
 	private static final String SHA_256 = "SHA-256";
 	private static final String AES_ECB_PKCS5PADDING = "AES/ECB/PKCS5PADDING";
+
+	@Override
+	public byte[] encryptSignAndEncode(byte[] rawPayload) {
+		// 1. encrypt
+		byte[] encryptedPayload = encipher(rawPayload);
+
+		// 2. sign
+		byte[] signedPayload = signAndPrefix(encryptedPayload);
+
+		// 3. decode
+		byte[] base64EncodedPayload = encodeBase64(signedPayload);
+
+		// return the encrypted, signed and base64 encoded payload
+		return base64EncodedPayload;
+	}
+
+	@Override
+	public byte[] decodeDecryptAndVerifySignature(
+			byte[] decodedEncryptedAndSignedPayload)
+			throws InvalidSignatureOrTamperedPayloadException {
+		// 1. decode
+		byte[] encryptedAndSignedPayload = decodeBase64(decodedEncryptedAndSignedPayload);
+
+		// 2. validate signature
+		byte[] encryptedPayload = validateSignature(encryptedAndSignedPayload);
+
+		// 3. encrypt
+		byte[] rawPayload = decipher(encryptedPayload);
+
+		// return the decoded, decrypted and validated raw payload
+		return rawPayload;
+	}
 
 	@Override
 	public byte[] encipher(byte[] rawPayload) {
@@ -88,15 +122,25 @@ class SessionInACookieDefaultImpl implements PayloadCipher, PayloadSigner,
 	}
 
 	@Override
-	public void validateSignature(byte[] signatureAndPayload)
+	public byte[] signAndPrefix(byte[] payload) {
+		byte[] signature = sign(payload);
+		byte[] signatureAndPayload = new byte[signature.length + payload.length];
+		System.arraycopy(signature, 0, signatureAndPayload, 0, signature.length);
+		System.arraycopy(payload, 0, signatureAndPayload, signature.length,
+				payload.length);
+		return signatureAndPayload;
+	}
+
+	@Override
+	public byte[] validateSignature(byte[] signatureAndPayload)
 			throws InvalidSignatureOrTamperedPayloadException {
 		byte[] payload = new byte[signatureAndPayload.length - 20];
 		byte[] signature = new byte[20];
 		System.arraycopy(signatureAndPayload, 20, payload, 0,
 				signatureAndPayload.length - 20);
 		System.arraycopy(signatureAndPayload, 0, signature, 0, 20);
-
 		validateSignature(payload, signature);
+		return payload;
 	}
 
 	@Override
@@ -106,13 +150,8 @@ class SessionInACookieDefaultImpl implements PayloadCipher, PayloadSigner,
 			throw new InvalidSignatureOrTamperedPayloadException();
 		}
 		byte[] newSignature = sign(payload);
-		try {
-			if (!new String(newSignature, UTF_8).equals(new String(signature,
-					UTF_8))) {
-				throw new InvalidSignatureOrTamperedPayloadException();
-			}
-		} catch (UnsupportedEncodingException e) {
-			new RuntimeException(e);
+		if (!Arrays.equals(newSignature, signature)) {
+			throw new InvalidSignatureOrTamperedPayloadException();
 		}
 	}
 
