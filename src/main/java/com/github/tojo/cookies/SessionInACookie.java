@@ -27,7 +27,10 @@ package com.github.tojo.cookies;
  * 
  * @author github.com/tojo
  */
-public interface SessionInACookie {
+public abstract class SessionInACookie implements PayloadCipher, PayloadSigner,
+		PayloadDecoder {
+
+	private static SessionInACookie instance = null;
 
 	/**
 	 * Encrypts, sign and base64 encodes the payload.
@@ -35,7 +38,7 @@ public interface SessionInACookie {
 	 * @param rawPayload
 	 * @return The encrypted, signed and base64 encoded payload.
 	 */
-	byte[] encryptSignAndEncode(byte[] rawPayload);
+	abstract byte[] encryptSignAndEncode(byte[] rawPayload);
 
 	/**
 	 * Decodes from base64, validates signature and decrypt the payload.
@@ -44,6 +47,19 @@ public interface SessionInACookie {
 	 * @return The raw payload.
 	 * @throws InvalidSignatureOrTamperedPayloadException
 	 */
-	byte[] decodeDecryptAndVerifySignature(byte[] encryptedAndSignedPayload)
+	abstract byte[] decodeDecryptAndVerifySignature(
+			byte[] encryptedAndSignedPayload)
 			throws InvalidSignatureOrTamperedPayloadException;
+
+	/**
+	 * Get the default {@link SessionInACookie} implementation object.
+	 * 
+	 * @return the default {@link SessionInACookie} object
+	 */
+	public static SessionInACookie getDefaultInstance() {
+		if (instance == null) {
+			instance = new SessionInACookieDefaultImpl();
+		}
+		return instance;
+	}
 }

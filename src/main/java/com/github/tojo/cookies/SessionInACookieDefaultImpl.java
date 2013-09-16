@@ -20,7 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.github.tojo.cookies.internal;
+package com.github.tojo.cookies;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -38,20 +38,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.github.tojo.cookies.InvalidSignatureOrTamperedPayloadException;
-import com.github.tojo.cookies.PayloadCipher;
-import com.github.tojo.cookies.PayloadDecoder;
-import com.github.tojo.cookies.PayloadSigner;
-import com.github.tojo.cookies.SessionInACookie;
-
 /**
  * Default implementation of {@link SessionInACookie}, {@link PayloadCipher},
  * {@link PayloadSigner} and {@link PayloadDecoder}.
  * 
  * @author github.com/tojo
  */
-class SessionInACookieDefaultImpl implements SessionInACookie, PayloadCipher,
-		PayloadSigner, PayloadDecoder {
+class SessionInACookieDefaultImpl extends SessionInACookie {
 
 	private static final String UTF_8 = "UTF-8";
 

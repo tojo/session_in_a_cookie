@@ -1,21 +1,21 @@
-package com.github.tojo.cookies.internal;
+package com.github.tojo.cookies;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.tojo.cookies.InvalidSignatureOrTamperedPayloadException;
+import com.github.tojo.cookies.SessionInACookieDefaultImpl;
 
 public class PayloadCipherDefaultImplTest {
 
-	static SessionInACookieDefaultImpl sut;
+	static SessionInACookie sut;
 	static String samplePayloadLoremIpsum;
 	static byte[] samplePayloadLoremIpsumAsBytes;
 	static String samplePayloadFooBar;
@@ -23,7 +23,7 @@ public class PayloadCipherDefaultImplTest {
 
 	@BeforeClass
 	public static void setup() throws Exception {
-		sut = new SessionInACookieDefaultImpl();
+		sut = SessionInACookie.getDefaultInstance();
 		samplePayloadLoremIpsum = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
 		samplePayloadLoremIpsumAsBytes = samplePayloadLoremIpsum
 				.getBytes("UTF-8");
