@@ -46,6 +46,8 @@ import org.apache.commons.codec.binary.Base64;
  */
 class SessionInACookieDefaultImpl extends SessionInACookie {
 
+	private static final int SIGNATURE_LENGTH = 20;
+
 	private static final String UTF_8 = "UTF-8";
 
 	private static final String HMAC_SHA1 = "HmacSHA1";
@@ -127,11 +129,11 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	@Override
 	public byte[] validateSignature(byte[] signatureAndPayload)
 			throws InvalidSignatureOrTamperedPayloadException {
-		byte[] payload = new byte[signatureAndPayload.length - 20];
-		byte[] signature = new byte[20];
-		System.arraycopy(signatureAndPayload, 20, payload, 0,
-				signatureAndPayload.length - 20);
-		System.arraycopy(signatureAndPayload, 0, signature, 0, 20);
+		byte[] payload = new byte[signatureAndPayload.length - SIGNATURE_LENGTH];
+		byte[] signature = new byte[SIGNATURE_LENGTH];
+		System.arraycopy(signatureAndPayload, SIGNATURE_LENGTH, payload, 0,
+				signatureAndPayload.length - SIGNATURE_LENGTH);
+		System.arraycopy(signatureAndPayload, 0, signature, 0, SIGNATURE_LENGTH);
 		validateSignature(payload, signature);
 		return payload;
 	}
@@ -139,7 +141,7 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	@Override
 	public void validateSignature(byte[] payload, byte[] signature)
 			throws InvalidSignatureOrTamperedPayloadException {
-		if (signature == null || signature.length != 20) {
+		if (signature == null || signature.length != SIGNATURE_LENGTH) {
 			throw new InvalidSignatureOrTamperedPayloadException();
 		}
 		byte[] newSignature = sign(payload);
