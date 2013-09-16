@@ -11,10 +11,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.tojo.cookies.InvalidSignatureOrTamperedPayloadException;
-import com.github.tojo.cookies.SessionInACookieDefaultImpl;
 
 public class PayloadCipherDefaultImplTest {
 
+	private static final int SIGNATURE_LENGTH = 32;
 	static SessionInACookie sut;
 	static String samplePayloadLoremIpsum;
 	static byte[] samplePayloadLoremIpsumAsBytes;
@@ -50,8 +50,8 @@ public class PayloadCipherDefaultImplTest {
 	public void testSignPayload() throws Exception {
 		byte[] signatureLoremIpsum = sut.sign(samplePayloadLoremIpsumAsBytes);
 		byte[] signatureFooBar = sut.sign(samplePayloadFooBarAsBytes);
-		assertEquals(20, signatureLoremIpsum.length);
-		assertEquals(20, signatureFooBar.length);
+		assertEquals(SIGNATURE_LENGTH, signatureLoremIpsum.length);
+		assertEquals(SIGNATURE_LENGTH, signatureFooBar.length);
 		assertNotEquals(new String(signatureLoremIpsum, "UTF-8"), new String(
 				signatureFooBar, "UTF-8"));
 	}
@@ -66,9 +66,9 @@ public class PayloadCipherDefaultImplTest {
 		sut.validateSignature(signatureAndPayload);
 
 		// extract the payload and check it
-		byte[] payload = new byte[signatureAndPayload.length - 20];
-		System.arraycopy(signatureAndPayload, 20, payload, 0,
-				signatureAndPayload.length - 20);
+		byte[] payload = new byte[signatureAndPayload.length - SIGNATURE_LENGTH];
+		System.arraycopy(signatureAndPayload, SIGNATURE_LENGTH, payload, 0,
+				signatureAndPayload.length - SIGNATURE_LENGTH);
 		assertTrue(Arrays.equals(samplePayloadLoremIpsumAsBytes, payload));
 	}
 

@@ -46,11 +46,11 @@ import org.apache.commons.codec.binary.Base64;
  */
 class SessionInACookieDefaultImpl extends SessionInACookie {
 
-	private static final int SIGNATURE_LENGTH = 20;
+	public static final int SIGNATURE_LENGTH = 32;
 
 	private static final String UTF_8 = "UTF-8";
 
-	private static final String HMAC_SHA1 = "HmacSHA1";
+	private static final String HMAC_SHA1 = "HmacSHA256";
 
 	// TODO: externalize into config
 	private static final String SECRET_KEY_BASE = "C4/ePwd3fA@(v9;4V=k>2G3s3(?742JZ=tB;r([2H:@i%84jdJ9kF?2[D)QRENoc9/&Xyb.MYu";
