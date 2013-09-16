@@ -35,6 +35,8 @@ public interface PayloadSigner {
 	 * 
 	 * @param payload
 	 * @return The signature.
+	 * @throws IllegalArgumentException
+	 *             if the payload is null or empty
 	 */
 	byte[] sign(byte[] payload);
 
@@ -44,6 +46,8 @@ public interface PayloadSigner {
 	 * 
 	 * @param payload
 	 * @return The signature + payload.
+	 * @throws IllegalArgumentException
+	 *             if the payload is null or empty
 	 */
 	byte[] signAndPrefix(byte[] payload);
 
@@ -54,6 +58,8 @@ public interface PayloadSigner {
 	 * @param signatureAndPayload
 	 * @return The valid payload without the signature.
 	 * @throws InvalidSignatureOrTamperedPayloadException
+	 * @throws IllegalArgumentException
+	 *             if the signatureAndPayload is null, empty or too short
 	 */
 	byte[] validateSignature(byte[] signatureAndPayload)
 			throws InvalidSignatureOrTamperedPayloadException;
@@ -64,6 +70,8 @@ public interface PayloadSigner {
 	 * @param payload
 	 * @param signature
 	 * @throws InvalidSignatureOrTamperedPayloadException
+	 * @throws IllegalArgumentException
+	 *             if the payload or signature is null, empty or too short
 	 */
 	void validateSignature(byte[] payload, byte[] signature)
 			throws InvalidSignatureOrTamperedPayloadException;

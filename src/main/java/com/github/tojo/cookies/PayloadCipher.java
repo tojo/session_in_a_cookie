@@ -36,6 +36,8 @@ public interface PayloadCipher {
 	 * @param rawPayload
 	 *            The unencrypted user data to be encrypted.
 	 * @return The encrypted payload.
+	 * @throws IllegalArgumentException
+	 *             if the rawPayload is null or empty
 	 */
 	byte[] encipher(byte[] rawPayload);
 
@@ -46,6 +48,8 @@ public interface PayloadCipher {
 	 * @param encryptedPayload
 	 *            The encrypted payload, which are to be decoded.
 	 * @return The decoded payload.
+	 * @throws IllegalArgumentException
+	 *             if the encryptedPayload is null or empty
 	 */
 	byte[] decipher(byte[] encryptedPayload);
 }

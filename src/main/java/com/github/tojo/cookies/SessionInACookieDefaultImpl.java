@@ -61,6 +61,8 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 
 	@Override
 	public byte[] encryptSignAndEncode(byte[] rawPayload) {
+		assertNotNullAndEmpty(rawPayload);
+
 		// 1. encrypt
 		byte[] encryptedPayload = encipher(rawPayload);
 
@@ -78,6 +80,8 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	public byte[] decodeDecryptAndVerifySignature(
 			byte[] decodedEncryptedAndSignedPayload)
 			throws InvalidSignatureOrTamperedPayloadException {
+		assertMinLength(decodedEncryptedAndSignedPayload, SIGNATURE_LENGTH + 1);
+
 		// 1. decode
 		byte[] encryptedAndSignedPayload = decodeBase64(decodedEncryptedAndSignedPayload);
 
@@ -93,16 +97,20 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 
 	@Override
 	public byte[] encipher(byte[] rawPayload) {
+		assertNotNullAndEmpty(rawPayload);
 		return encryptOrDecryptPayload(rawPayload, Cipher.ENCRYPT_MODE);
 	}
 
 	@Override
 	public byte[] decipher(byte[] encryptedPayload) {
+		assertNotNullAndEmpty(encryptedPayload);
 		return encryptOrDecryptPayload(encryptedPayload, Cipher.DECRYPT_MODE);
 	}
 
 	@Override
 	public byte[] sign(byte[] payload) {
+		assertNotNullAndEmpty(payload);
+
 		byte[] signature = null;
 		try {
 			Key key = buildKey(SECRET_KEY_BASE.getBytes(UTF_8), HMAC_SHA1);
@@ -118,6 +126,8 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 
 	@Override
 	public byte[] signAndPrefix(byte[] payload) {
+		assertNotNullAndEmpty(payload);
+
 		byte[] signature = sign(payload);
 		byte[] signatureAndPayload = new byte[signature.length + payload.length];
 		System.arraycopy(signature, 0, signatureAndPayload, 0, signature.length);
@@ -129,6 +139,8 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	@Override
 	public byte[] validateSignature(byte[] signatureAndPayload)
 			throws InvalidSignatureOrTamperedPayloadException {
+		assertMinLength(signatureAndPayload, SIGNATURE_LENGTH + 1);
+
 		byte[] payload = new byte[signatureAndPayload.length - SIGNATURE_LENGTH];
 		byte[] signature = new byte[SIGNATURE_LENGTH];
 		System.arraycopy(signatureAndPayload, SIGNATURE_LENGTH, payload, 0,
@@ -141,7 +153,10 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	@Override
 	public void validateSignature(byte[] payload, byte[] signature)
 			throws InvalidSignatureOrTamperedPayloadException {
-		if (signature == null || signature.length != SIGNATURE_LENGTH) {
+		assertNotNullAndEmpty(payload);
+		assertMinLength(signature, SIGNATURE_LENGTH);
+
+		if (SIGNATURE_LENGTH != signature.length) {
 			throw new InvalidSignatureOrTamperedPayloadException();
 		}
 		byte[] newSignature = sign(payload);
@@ -152,11 +167,13 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 
 	@Override
 	public byte[] encodeBase64(byte[] rawPayload) {
+		assertNotNullAndEmpty(rawPayload);
 		return Base64.encodeBase64(rawPayload);
 	}
 
 	@Override
 	public byte[] decodeBase64(byte[] base64EncodedPayload) {
+		assertNotNullAndEmpty(base64EncodedPayload);
 		return Base64.decodeBase64(base64EncodedPayload);
 	}
 
@@ -166,6 +183,8 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 
 	private Key buildKey(byte[] password, String algorithmus)
 			throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		assertNotNullAndEmpty(password);
+
 		MessageDigest digester = MessageDigest.getInstance(SHA_256);
 		digester.update(password);
 		byte[] key = digester.digest();
@@ -174,6 +193,9 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	}
 
 	private byte[] encryptOrDecryptPayload(byte[] inputPayload, int mode) {
+		assertNotNullAndEmpty(inputPayload);
+		assertAllowedCipherMode(mode);
+
 		byte[] outputPayload = null;
 		try {
 			Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
@@ -186,5 +208,24 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 			new RuntimeException(e);
 		}
 		return outputPayload;
+	}
+
+	private void assertAllowedCipherMode(int mode) {
+		if (mode != Cipher.ENCRYPT_MODE && mode != Cipher.DECRYPT_MODE)
+			throw new IllegalArgumentException(
+					"Wrong cipher mode! Only Cipher.ENCRYPT_MODE or Cipher.DECRYPT_MODE are supported.");
+	}
+
+	private void assertNotNullAndEmpty(byte[] input) {
+		if (input == null || input.length == 0)
+			throw new IllegalArgumentException("Input byte[] is null or empty!");
+	}
+
+	private void assertMinLength(byte[] input, int minLength) {
+		assertNotNullAndEmpty(input);
+		if (minLength > input.length)
+			throw new IllegalArgumentException(
+					"Input byte[] is to short! The length must be at least "
+							+ minLength);
 	}
 }

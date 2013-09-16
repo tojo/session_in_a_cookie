@@ -93,7 +93,7 @@ public class PayloadCipherDefaultImplTest {
 	}
 
 	@Test
-	public void issueCookiePayload()
+	public void testIssueCookiePayloadAndDecryptAgain()
 			throws InvalidSignatureOrTamperedPayloadException, Exception {
 		byte[] sessionInACookiePayload = sut
 				.encryptSignAndEncode(samplePayloadLoremIpsumAsBytes);
@@ -102,8 +102,13 @@ public class PayloadCipherDefaultImplTest {
 		assertTrue(Arrays.equals(samplePayloadLoremIpsumAsBytes, rawPayload));
 	}
 
-	@Test
-	public void decryptCookiePayload() {
+	@Test(expected = IllegalArgumentException.class)
+	public void testIssueEmptyCookiePayload() {
+		sut.encryptSignAndEncode(null);
+	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testValidateEmptySignature() throws Exception {
+		sut.validateSignature(null);
 	}
 }

@@ -34,6 +34,8 @@ public interface PayloadDecoder {
 	 * 
 	 * @param rawPayload
 	 * @return The encoded payload
+	 * @throws IllegalArgumentException
+	 *             if the rawPayload is null or empty
 	 */
 	byte[] encodeBase64(byte[] rawPayload);
 
@@ -42,6 +44,8 @@ public interface PayloadDecoder {
 	 * 
 	 * @param base64EncodedPayload
 	 * @return The decoded payload.
+	 * @throws IllegalArgumentException
+	 *             if the base64EncodedPayload is null or empty
 	 */
 	byte[] decodeBase64(byte[] base64EncodedPayload);
 

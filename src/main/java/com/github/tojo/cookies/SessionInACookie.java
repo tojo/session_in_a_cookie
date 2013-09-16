@@ -36,7 +36,10 @@ public abstract class SessionInACookie implements PayloadCipher, PayloadSigner,
 	 * Encrypts, sign and base64 encodes the payload.
 	 * 
 	 * @param rawPayload
+	 *            the raw payload
 	 * @return The encrypted, signed and base64 encoded payload.
+	 * @throws IllegalArgumentException
+	 *             if the rawPayload is null or empty
 	 */
 	abstract byte[] encryptSignAndEncode(byte[] rawPayload);
 
@@ -46,6 +49,8 @@ public abstract class SessionInACookie implements PayloadCipher, PayloadSigner,
 	 * @param encryptedAndSignedPayload
 	 * @return The raw payload.
 	 * @throws InvalidSignatureOrTamperedPayloadException
+	 * @throws IllegalArgumentException
+	 *             if the encryptedAndSignedPayload is null, empty or too short
 	 */
 	abstract byte[] decodeDecryptAndVerifySignature(
 			byte[] encryptedAndSignedPayload)
