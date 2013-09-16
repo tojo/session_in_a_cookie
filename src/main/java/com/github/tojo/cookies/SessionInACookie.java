@@ -59,11 +59,13 @@ public abstract class SessionInACookie implements PayloadCipher, PayloadSigner,
 	/**
 	 * Get the default {@link SessionInACookie} implementation object.
 	 * 
+	 * @param secretKey
+	 *            the shared secret which for en- and decryption.
 	 * @return the default {@link SessionInACookie} object
 	 */
-	public static SessionInACookie getDefaultInstance() {
+	public static SessionInACookie getDefaultInstance(String secretKey) {
 		if (instance == null) {
-			instance = new SessionInACookieDefaultImpl();
+			instance = new SessionInACookieDefaultImpl(secretKey);
 		}
 		return instance;
 	}
