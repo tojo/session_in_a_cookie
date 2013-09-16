@@ -50,7 +50,7 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 
 	private static final String UTF_8 = "UTF-8";
 
-	private static final String HMAC_SHA1 = "HmacSHA256";
+	private static final String HMAC_SHA256 = "HmacSHA256";
 	private static final String AES = "AES";
 	private static final String SHA_256 = "SHA-256";
 	private static final String AES_ECB_PKCS5PADDING = "AES/ECB/PKCS5PADDING";
@@ -115,8 +115,8 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 
 		byte[] signature = null;
 		try {
-			Key key = buildKey(SECRET_KEY_BASE.getBytes(UTF_8), HMAC_SHA1);
-			Mac mac = Mac.getInstance(HMAC_SHA1);
+			Key key = buildKey(SECRET_KEY_BASE.getBytes(UTF_8), HMAC_SHA256);
+			Mac mac = Mac.getInstance(HMAC_SHA256);
 			mac.init(key);
 			signature = mac.doFinal(payload);
 		} catch (NoSuchAlgorithmException | UnsupportedEncodingException
