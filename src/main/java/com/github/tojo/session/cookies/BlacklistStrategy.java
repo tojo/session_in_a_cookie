@@ -20,36 +20,28 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.github.tojo.cookies;
+package com.github.tojo.session.cookies;
 
 /**
- * Methods to encrypt and decrypt of user data.
+ * TODO
  * 
  * @author github.com/tojo
  */
-public interface PayloadCipher {
+public interface BlacklistStrategy {
 
 	/**
-	 * This method takes as an argument the unencrypted payload and returns
-	 * encrypted.
+	 * TODO
 	 * 
-	 * @param rawPayload
-	 *            The unencrypted user data to be encrypted.
-	 * @return The encrypted payload.
-	 * @throws IllegalArgumentException
-	 *             if the rawPayload is null or empty
+	 * @param cookieValue
 	 */
-	byte[] encipher(byte[] rawPayload);
+	void add(String cookieValue);
 
 	/**
-	 * This method takes as an argument the encrypted payload, decrypts it and
-	 * returns it.
+	 * TODO
 	 * 
-	 * @param encryptedPayload
-	 *            The encrypted payload, which are to be decoded.
-	 * @return The decoded payload.
-	 * @throws IllegalArgumentException
-	 *             if the encryptedPayload is null or empty
+	 * @param cookieValue
+	 * @return
 	 */
-	byte[] decipher(byte[] encryptedPayload);
+	boolean contains(String cookieValue);
+
 }

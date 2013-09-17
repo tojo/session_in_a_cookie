@@ -20,33 +20,14 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.github.tojo.cookies;
+package com.github.tojo.session.cookies;
 
 /**
- * Methods to encode payload to and decode payload from base64.
+ * TODO
  * 
- * @author github.com/tjoch
+ * @author github.com/tojo
  */
-public interface PayloadDecoder {
-
-	/**
-	 * This method encodes the given payload in the base64 format.
-	 * 
-	 * @param rawPayload
-	 * @return The encoded payload
-	 * @throws IllegalArgumentException
-	 *             if the rawPayload is null or empty
-	 */
-	byte[] encodeBase64(byte[] rawPayload);
-
-	/**
-	 * This method decodes the given payload from the base64 format.
-	 * 
-	 * @param base64EncodedPayload
-	 * @return The decoded payload.
-	 * @throws IllegalArgumentException
-	 *             if the base64EncodedPayload is null or empty
-	 */
-	byte[] decodeBase64(byte[] base64EncodedPayload);
+@SuppressWarnings("serial")
+public class BlacklistException extends Exception {
 
 }

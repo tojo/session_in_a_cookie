@@ -20,14 +20,23 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.github.tojo.cookies;
+package com.github.tojo.session.cookies;
 
 /**
- * Indicates that the given signature is invalid or the payload was tampered.
+ * TODO
  * 
  * @author github.com/tojo
  */
 @SuppressWarnings("serial")
-public class InvalidSignatureOrTamperedPayloadException extends Exception {
+public class SignatureException extends Exception {
+
+	/**
+	 * TODO
+	 * 
+	 * @param message
+	 */
+	public SignatureException(String message) {
+		super(message);
+	}
 
 }
