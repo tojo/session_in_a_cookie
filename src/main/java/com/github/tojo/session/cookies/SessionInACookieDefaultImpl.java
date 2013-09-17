@@ -22,6 +22,9 @@
  */
 package com.github.tojo.session.cookies;
 
+import java.io.UnsupportedEncodingException;
+import java.util.UUID;
+
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -58,9 +61,25 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	}
 
 	@Override
-	String encode(byte[] data) throws CipherStrategyException {
-		// TODO Auto-generated method stub
-		return null;
+	String encode(byte[] sessionData) throws CipherStrategyException {
+		try {
+			// 1. create session id
+			byte[] sessionId = UUID.randomUUID().toString().getBytes("UTF-8");
+
+			// 2. concatenate the session id with the session data
+			byte[] dataWithSessionId = new byte[sessionId.length
+					+ sessionData.length];
+			System.arraycopy(sessionId, 0, dataWithSessionId, 0,
+					sessionData.length);
+			System.arraycopy(sessionData, 0, dataWithSessionId,
+					sessionId.length, sessionData.length);
+
+			// 3. return the encrypted, signed and encoded session data + with
+			// session id
+			return new String(encryptSignAndEncode(dataWithSessionId), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

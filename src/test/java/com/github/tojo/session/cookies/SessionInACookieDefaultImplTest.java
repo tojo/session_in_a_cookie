@@ -23,7 +23,7 @@
 package com.github.tojo.session.cookies;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
@@ -42,25 +42,25 @@ public class SessionInACookieDefaultImplTest extends SessionInACookieBaseTest {
 	}
 
 	@Test
-	public void testEncryptAndSignRoundtrip()
-			throws CipherStrategyException, Exception {
+	public void testEncryptAndSignRoundtrip() throws CipherStrategyException,
+			Exception {
 		byte[] cookieValue = sut
 				.encryptSignAndEncode(sampleSessionDataLoremIpsumAsBytes);
-		byte[] sessionData = sut
-				.decodeDecryptAndVerifySignature(cookieValue);
-		assertTrue(Arrays.equals(sampleSessionDataLoremIpsumAsBytes, sessionData));
+		byte[] sessionData = sut.decodeDecryptAndVerifySignature(cookieValue);
+		assertTrue(Arrays.equals(sampleSessionDataLoremIpsumAsBytes,
+				sessionData));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testEncryptSignAndEncodeWithNull() throws CipherStrategyException {
+	public void testEncryptSignAndEncodeWithNull()
+			throws CipherStrategyException {
 		sut.encryptSignAndEncode(null);
 	}
 
 	@Test
-	@Ignore
 	public void testNonce() throws CipherStrategyException {
-		byte[] cookieValue1 = sut.encryptSignAndEncode(sampleSessionDataFooBarAsBytes);
-		byte[] cookieValue2 = sut.encryptSignAndEncode(sampleSessionDataFooBarAsBytes);
-		assertFalse(Arrays.equals(cookieValue1, cookieValue2));
+		String cookieValue1 = sut.encode(sampleSessionDataFooBarAsBytes);
+		String cookieValue2 = sut.encode(sampleSessionDataFooBarAsBytes);
+		assertNotEquals(cookieValue1, cookieValue2);
 	}
 }
