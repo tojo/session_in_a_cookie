@@ -34,12 +34,10 @@ import org.apache.commons.codec.binary.Base64;
  */
 class SessionInACookieDefaultImpl extends SessionInACookie {
 
+	private static final int SESSION_ID_LENGTH = 36;
 	private final CipherStrategy cipherStrategy;
 	private final SignatureStrategy signatureStrategy;
-
-	// TODO Time-out strategies
 	private TimeoutStrategy timeoutStrategy;
-	// TODO Blacklist strategies
 	private BlacklistStrategy blacklistStrategy;
 
 	// TODO Transformer strategies
@@ -53,11 +51,16 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	 *            initial vector for en-/decryption
 	 * @param cipherStrategy
 	 * @param signatureStrategy
+	 * @param timeoutStrategy
+	 * @param blacklistStrategy
 	 */
 	public SessionInACookieDefaultImpl(CipherStrategy cipherStrategy,
-			SignatureStrategy signatureStrategy) {
+			SignatureStrategy signatureStrategy,
+			TimeoutStrategy timeoutStrategy, BlacklistStrategy blacklistStrategy) {
 		this.cipherStrategy = cipherStrategy;
 		this.signatureStrategy = signatureStrategy;
+		this.timeoutStrategy = timeoutStrategy;
+		this.blacklistStrategy = blacklistStrategy;
 	}
 
 	@Override
@@ -66,17 +69,22 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 			// 1. create session id
 			byte[] sessionId = UUID.randomUUID().toString().getBytes("UTF-8");
 
-			// 2. concatenate the session id with the session data
-			byte[] dataWithSessionId = new byte[sessionId.length
+			// 2. prefix session data with the session id
+			byte[] dataWithSessionId = new byte[SESSION_ID_LENGTH
 					+ sessionData.length];
 			System.arraycopy(sessionId, 0, dataWithSessionId, 0,
 					sessionData.length);
 			System.arraycopy(sessionData, 0, dataWithSessionId,
-					sessionId.length, sessionData.length);
+					SESSION_ID_LENGTH, sessionData.length);
 
-			// 3. return the encrypted, signed and encoded session data + with
-			// session id
-			return new String(encryptSignAndEncode(dataWithSessionId), "UTF-8");
+			// 3. calculate the cookie value
+			String cookieValue = new String(
+					encryptSignAndEncode(dataWithSessionId), "UTF-8");
+
+			// 4. hit timeout strategy
+			timeoutStrategy.hit(cookieValue);
+
+			return cookieValue;
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
@@ -85,8 +93,35 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	@Override
 	byte[] decode(String cookieValue) throws TimeoutException,
 			SignatureException, CipherStrategyException, BlacklistException {
-		// TODO Auto-generated method stub
-		return null;
+
+		try {
+			// 1. check blacklist
+			blacklistStrategy.check(cookieValue);
+
+			// 2. hit timeout
+			timeoutStrategy.hit(cookieValue);
+
+			// 3. decode
+			byte[] dataWithSessionId;
+			dataWithSessionId = decodeDecryptAndVerifySignature(cookieValue
+					.getBytes("UTF-8"));
+
+			// 4. extract the session id
+			byte[] sessionId = new byte[SESSION_ID_LENGTH];
+			System.arraycopy(dataWithSessionId, 0, sessionId, 0,
+					SESSION_ID_LENGTH - 1);
+
+			// 5. extract the session data
+			byte[] sessionData = new byte[dataWithSessionId.length
+					- SESSION_ID_LENGTH];
+			System.arraycopy(dataWithSessionId, SESSION_ID_LENGTH, sessionData,
+					0, dataWithSessionId.length - SESSION_ID_LENGTH);
+
+			// 3. return the session data
+			return sessionData;
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

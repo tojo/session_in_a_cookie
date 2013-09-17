@@ -82,7 +82,7 @@ public abstract class SessionInACookie {
 		if (instance == null) {
 			instance = new SessionInACookieDefaultImpl(
 					new CipherStrategyDefaultImpl(secret, iv),
-					new SignatureStrategyDefaultImpl(secret));
+					new SignatureStrategyDefaultImpl(secret), new TimeoutStrategyDefaultImpl(), new BlacklistStrategyDefaultImpl());
 		}
 		return instance;
 	}

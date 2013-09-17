@@ -22,33 +22,21 @@
  */
 package com.github.tojo.session.cookies;
 
-/**
- * TODO
- * 
- * @author github.com/tojo
- */
-public interface BlacklistStrategy {
+public class BlacklistStrategyDefaultImpl implements BlacklistStrategy {
 
-	/**
-	 * TODO
-	 * 
-	 * @param cookieValue
-	 */
-	void add(String cookieValue);
+	@Override
+	public void add(String cookieValue) {
+		// noop
+	}
 
-	/**
-	 * TODO
-	 * 
-	 * @param cookieValue
-	 * @return
-	 */
-	boolean contains(String cookieValue);
+	@Override
+	public boolean contains(String cookieValue) {
+		return false;
+	}
 
-	/**
-	 * TODO
-	 * 
-	 * @param cookieValue
-	 */
-	void check(String cookieValue) throws BlacklistException;
+	@Override
+	public void check(String cookieValue) throws BlacklistException {
+		// noop
+	}
 
 }
