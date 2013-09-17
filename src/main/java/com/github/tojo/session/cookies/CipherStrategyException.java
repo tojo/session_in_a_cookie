@@ -22,23 +22,44 @@
  */
 package com.github.tojo.session.cookies;
 
-import java.security.GeneralSecurityException;
-
 /**
- * TODO
+ * This Exception is thrown if an error occurs during encrypting the session
+ * data or decrypting the cookie value.
  * 
  * @author github.com/tojo
  */
-@SuppressWarnings("serial")
 public class CipherStrategyException extends Exception {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
-	 * TODO
-	 * 
-	 * @param e
+	 * Constructs a {@code CipherStrategyException} with no detail message.
 	 */
-	public CipherStrategyException(GeneralSecurityException e) {
-		super(e);
+	public CipherStrategyException() {
+		super();
 	}
 
+	/**
+	 * Constructs a {@code CipherStrategyException} with the specified detail
+	 * message.
+	 * 
+	 * @param s
+	 *            the detail message.
+	 */
+	public CipherStrategyException(String s) {
+		super(s);
+	}
+
+	/**
+	 * Constructs a {@code CipherStrategyException} with the specified detail
+	 * message and cause.
+	 * 
+	 * @param s
+	 *            the detail message
+	 * @param cause
+	 *            the cause
+	 */
+	public CipherStrategyException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

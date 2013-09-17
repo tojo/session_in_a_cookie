@@ -23,11 +23,42 @@
 package com.github.tojo.session.cookies;
 
 /**
- * TODO
+ * This Exception is thrown if the cookie value is black listed.
  * 
  * @author github.com/tojo
  */
-@SuppressWarnings("serial")
 public class BlacklistException extends Exception {
 
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Constructs a {@code BlacklistException} with no detail message.
+	 */
+	public BlacklistException() {
+		super();
+	}
+
+	/**
+	 * Constructs a {@code BlacklistException} with the specified detail
+	 * message.
+	 * 
+	 * @param s
+	 *            the detail message.
+	 */
+	public BlacklistException(String s) {
+		super(s);
+	}
+
+	/**
+	 * Constructs a {@code BlacklistException} with the specified detail message
+	 * and cause.
+	 * 
+	 * @param s
+	 *            the detail message
+	 * @param cause
+	 *            the cause
+	 */
+	public BlacklistException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

@@ -70,8 +70,7 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	}
 
 	@Override
-	public byte[] decipher(byte[] cookieValue)
-			throws CipherStrategyException {
+	public byte[] decipher(byte[] cookieValue) throws CipherStrategyException {
 		assertNotNullAndEmpty(cookieValue);
 		return encryptOrDecrypt(cookieValue, Cipher.DECRYPT_MODE);
 	}
@@ -93,7 +92,9 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidKeyException | IllegalBlockSizeException
 				| BadPaddingException | InvalidAlgorithmParameterException e) {
-			throw new CipherStrategyException(e);
+			throw new CipherStrategyException(
+					(mode == Cipher.ENCRYPT_MODE ? "Encryption" : "Decryption")
+							+ " failed!", e);
 		}
 		return output;
 	}

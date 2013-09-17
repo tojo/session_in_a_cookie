@@ -23,20 +23,43 @@
 package com.github.tojo.session.cookies;
 
 /**
- * TODO
+ * This Exception is thrown if an error occurs during signing the session data
+ * or verifying the signature of an signed session data.
  * 
  * @author github.com/tojo
  */
-@SuppressWarnings("serial")
 public class SignatureException extends Exception {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
-	 * TODO
-	 * 
-	 * @param message
+	 * Constructs a {@code SignatureException} with no detail message.
 	 */
-	public SignatureException(String message) {
-		super(message);
+	public SignatureException() {
+		super();
 	}
 
+	/**
+	 * Constructs a {@code SignatureException} with the specified detail
+	 * message.
+	 * 
+	 * @param s
+	 *            the detail message.
+	 */
+	public SignatureException(String s) {
+		super(s);
+	}
+
+	/**
+	 * Constructs a {@code SignatureException} with the specified detail message
+	 * and cause.
+	 * 
+	 * @param s
+	 *            the detail message
+	 * @param cause
+	 *            the cause
+	 */
+	public SignatureException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

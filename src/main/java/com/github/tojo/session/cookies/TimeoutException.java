@@ -23,11 +23,41 @@
 package com.github.tojo.session.cookies;
 
 /**
- * TODO
+ * This Exception is thrown if the cookie value timed out.
  * 
  * @author github.com/tojo
  */
-@SuppressWarnings("serial")
 public class TimeoutException extends Exception {
 
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Constructs a {@code TimeoutException} with no detail message.
+	 */
+	public TimeoutException() {
+		super();
+	}
+
+	/**
+	 * Constructs a {@code TimeoutException} with the specified detail message.
+	 * 
+	 * @param s
+	 *            the detail message.
+	 */
+	public TimeoutException(String s) {
+		super(s);
+	}
+
+	/**
+	 * Constructs a {@code TimeoutException} with the specified detail message
+	 * and cause.
+	 * 
+	 * @param s
+	 *            the detail message
+	 * @param cause
+	 *            the cause
+	 */
+	public TimeoutException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }
