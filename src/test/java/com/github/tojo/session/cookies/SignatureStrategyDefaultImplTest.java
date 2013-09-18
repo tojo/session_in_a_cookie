@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,7 +44,8 @@ public class SignatureStrategyDefaultImplTest extends SessionInACookieBaseTest {
 
 	@Test
 	public void testSignSessionData() throws Exception {
-		byte[] signatureLoremIpsum = sut.sign(sampleSessionDataLoremIpsumAsBytes);
+		byte[] signatureLoremIpsum = sut
+				.sign(sampleSessionDataLoremIpsumAsBytes);
 		byte[] signatureFooBar = sut.sign(sampleSessionDataFooBarAsBytes);
 		assertEquals(SIGNATURE_LENGTH, signatureLoremIpsum.length);
 		assertEquals(SIGNATURE_LENGTH, signatureFooBar.length);
@@ -53,23 +55,25 @@ public class SignatureStrategyDefaultImplTest extends SessionInACookieBaseTest {
 
 	@Test
 	public void testSignAndPrefixSessionData() throws Exception {
-		byte[] signatureLoremIpsum = sut.sign(sampleSessionDataLoremIpsumAsBytes);
+		byte[] signatureLoremIpsum = sut
+				.sign(sampleSessionDataLoremIpsumAsBytes);
 		byte[] signedSessionData = sut
 				.signAndPrefix(sampleSessionDataLoremIpsumAsBytes);
 		sut.validateSignature(sampleSessionDataLoremIpsumAsBytes,
 				signatureLoremIpsum);
-		sut.validateSignature(signedSessionData);
+		validateSignature(signedSessionData);
 
 		// extract the session data and check it
-		byte[] sessionData = new byte[signedSessionData.length - SIGNATURE_LENGTH];
-		System.arraycopy(signedSessionData, SIGNATURE_LENGTH, sessionData, 0,
-				signedSessionData.length - SIGNATURE_LENGTH);
-		assertTrue(Arrays.equals(sampleSessionDataLoremIpsumAsBytes, sessionData));
+		byte[] sessionData = ArrayUtils.subarray(signedSessionData,
+				SIGNATURE_LENGTH, signedSessionData.length);
+		assertTrue(Arrays.equals(sampleSessionDataLoremIpsumAsBytes,
+				sessionData));
 	}
 
 	@Test
 	public void testValidateSignature() throws Exception {
-		byte[] signatureLoremIpsum = sut.sign(sampleSessionDataLoremIpsumAsBytes);
+		byte[] signatureLoremIpsum = sut
+				.sign(sampleSessionDataLoremIpsumAsBytes);
 		byte[] signatureFooBar = sut.sign(sampleSessionDataFooBarAsBytes);
 		sut.validateSignature(sampleSessionDataLoremIpsumAsBytes,
 				signatureLoremIpsum);
@@ -77,18 +81,27 @@ public class SignatureStrategyDefaultImplTest extends SessionInACookieBaseTest {
 
 		byte[] signedSessionDataLoremIpsum = sut
 				.signAndPrefix(sampleSessionDataLoremIpsumAsBytes);
-		byte[] sessionData = sut.validateSignature(signedSessionDataLoremIpsum);
-		assertTrue(Arrays.equals(sampleSessionDataLoremIpsumAsBytes, sessionData));
+		byte[] sessionData = validateSignature(signedSessionDataLoremIpsum);
+		assertTrue(Arrays.equals(sampleSessionDataLoremIpsumAsBytes,
+				sessionData));
 	}
 
 	@Test(expected = SignatureException.class)
 	public void testValidateInvalidSignature() throws Exception {
-		byte[] signatureLoremIpsum = sut.sign(sampleSessionDataLoremIpsumAsBytes);
-		sut.validateSignature(sampleSessionDataFooBarAsBytes, signatureLoremIpsum);
+		byte[] signatureLoremIpsum = sut
+				.sign(sampleSessionDataLoremIpsumAsBytes);
+		sut.validateSignature(sampleSessionDataFooBarAsBytes,
+				signatureLoremIpsum);
 	}
 
-	@Test(expected = InvalidInputFormatException.class)
-	public void testValidateEmptySignature() throws Exception {
-		sut.validateSignature(null);
+	byte[] validateSignature(byte[] signedSessionData)
+			throws SignatureException {
+		byte[] signature = ArrayUtils.subarray(signedSessionData, 0,
+				SIGNATURE_LENGTH);
+		byte[] sessionData = ArrayUtils.subarray(signedSessionData,
+				SIGNATURE_LENGTH, signedSessionData.length);
+		sut.validateSignature(sessionData, signature);
+		return sessionData;
 	}
+
 }

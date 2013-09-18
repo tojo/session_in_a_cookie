@@ -41,31 +41,6 @@ interface SignatureStrategy {
 	byte[] sign(byte[] sessionData);
 
 	/**
-	 * Calculates a signature for the given session data and returns it prefixed
-	 * with the calculated signature.
-	 * 
-	 * @param sessionData
-	 * @return the combined signature + session data.
-	 * @throws InvalidInputFormatException
-	 *             if the sessionData is null or empty
-	 */
-	byte[] signAndPrefix(byte[] sessionData);
-
-	/**
-	 * Extracts the first 20 bytes of the cookie value as signature and
-	 * validates the session data with it.
-	 * 
-	 * @param cookieValue
-	 *            the signature and signed session data
-	 * @return The valid session data without the signature.
-	 * @throws SignatureException
-	 *             if the signature is invalid
-	 * @throws InvalidInputFormatException
-	 *             if the cookieValue is null, empty or too short
-	 */
-	byte[] validateSignature(byte[] cookieValue) throws SignatureException;
-
-	/**
 	 * Validates the session data with the given signature.
 	 * 
 	 * @param sessionData
@@ -79,4 +54,11 @@ interface SignatureStrategy {
 	 */
 	void validateSignature(byte[] sessionData, byte[] signature)
 			throws SignatureException;
+
+	/**
+	 * Getter for the strategy specific fixed length of created signatures.
+	 * 
+	 * @return the fixed length of a signature
+	 */
+	int getSignatureLength();
 }

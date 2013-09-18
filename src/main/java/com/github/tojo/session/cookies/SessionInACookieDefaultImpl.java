@@ -26,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Default implementation of {@link SessionInACookie}.
@@ -70,12 +71,8 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 			byte[] sessionId = UUID.randomUUID().toString().getBytes("UTF-8");
 
 			// 2. prefix session data with the session id
-			byte[] dataWithSessionId = new byte[SESSION_ID_LENGTH
-					+ sessionData.length];
-			System.arraycopy(sessionId, 0, dataWithSessionId, 0,
-					sessionData.length);
-			System.arraycopy(sessionData, 0, dataWithSessionId,
-					SESSION_ID_LENGTH, sessionData.length);
+			byte[] dataWithSessionId = ArrayUtils
+					.addAll(sessionId, sessionData);
 
 			// 3. calculate the cookie value
 			String cookieValue = new String(
@@ -107,15 +104,12 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 					.getBytes("UTF-8"));
 
 			// 4. extract the session id
-			byte[] sessionId = new byte[SESSION_ID_LENGTH];
-			System.arraycopy(dataWithSessionId, 0, sessionId, 0,
-					SESSION_ID_LENGTH - 1);
+			byte[] sessionId = ArrayUtils.subarray(dataWithSessionId, 0,
+					SESSION_ID_LENGTH);
 
 			// 5. extract the session data
-			byte[] sessionData = new byte[dataWithSessionId.length
-					- SESSION_ID_LENGTH];
-			System.arraycopy(dataWithSessionId, SESSION_ID_LENGTH, sessionData,
-					0, dataWithSessionId.length - SESSION_ID_LENGTH);
+			byte[] sessionData = ArrayUtils.subarray(dataWithSessionId,
+					SESSION_ID_LENGTH, dataWithSessionId.length);
 
 			// 3. return the session data
 			return sessionData;
@@ -141,8 +135,9 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 		byte[] encryptedSessionData = cipherStrategy.encipher(sessionData);
 
 		// 2. sign
-		byte[] signedSessionData = signatureStrategy
-				.signAndPrefix(encryptedSessionData);
+		byte[] signature = signatureStrategy.sign(encryptedSessionData);
+		byte[] signedSessionData = ArrayUtils.addAll(signature,
+				encryptedSessionData);
 
 		// 3. decode
 		byte[] cookieValue = Base64.encodeBase64(signedSessionData);
@@ -160,8 +155,13 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 		byte[] encryptedAndSignedSessionData = Base64.decodeBase64(cookieValue);
 
 		// 2. validate signature
-		byte[] encryptedSessionData = signatureStrategy
-				.validateSignature(encryptedAndSignedSessionData);
+		byte[] signature = ArrayUtils.subarray(encryptedAndSignedSessionData,
+				0, signatureStrategy.getSignatureLength());
+		byte[] encryptedSessionData = ArrayUtils.subarray(
+				encryptedAndSignedSessionData,
+				signatureStrategy.getSignatureLength(),
+				encryptedAndSignedSessionData.length);
+		signatureStrategy.validateSignature(encryptedSessionData, signature);
 
 		// 3. encrypt
 		byte[] sessionData = cipherStrategy.decipher(encryptedSessionData);

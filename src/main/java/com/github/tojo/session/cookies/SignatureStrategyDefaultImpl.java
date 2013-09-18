@@ -34,6 +34,8 @@ import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.lang.ArrayUtils;
+
 /**
  * TODO
  * 
@@ -76,52 +78,37 @@ class SignatureStrategyDefaultImpl implements SignatureStrategy {
 	}
 
 	@Override
-	public byte[] signAndPrefix(byte[] sessionData) {
-		assertNotNullAndEmpty(sessionData);
-
-		byte[] signature = sign(sessionData);
-		byte[] signedSessionData = new byte[signature.length
-				+ sessionData.length];
-		System.arraycopy(signature, 0, signedSessionData, 0, signature.length);
-		System.arraycopy(sessionData, 0, signedSessionData, signature.length,
-				sessionData.length);
-		return signedSessionData;
-	}
-
-	@Override
-	public byte[] validateSignature(byte[] signedSessionData)
-			throws SignatureException {
-		assertMinLength(signedSessionData, SIGNATURE_LENGTH + 1);
-
-		byte[] sessionData = new byte[signedSessionData.length
-				- SIGNATURE_LENGTH];
-		byte[] signature = new byte[SIGNATURE_LENGTH];
-		System.arraycopy(signedSessionData, SIGNATURE_LENGTH, sessionData, 0,
-				signedSessionData.length - SIGNATURE_LENGTH);
-		System.arraycopy(signedSessionData, 0, signature, 0, SIGNATURE_LENGTH);
-		validateSignature(sessionData, signature);
-		return sessionData;
-	}
-
-	@Override
 	public void validateSignature(byte[] sessionData, byte[] signature)
 			throws SignatureException {
 		assertNotNullAndEmpty(sessionData);
 		assertMinLength(signature, SIGNATURE_LENGTH);
 
 		if (SIGNATURE_LENGTH != signature.length) {
-			throw new SignatureException("Invalid signature!");
-		}
-		byte[] newSignature = sign(sessionData);
-		if (!Arrays.equals(newSignature, signature)) {
 			throw new SignatureException("Invalid signature length. Expected: "
 					+ SIGNATURE_LENGTH + ", is: " + signature.length);
 		}
+		byte[] newSignature = sign(sessionData);
+		if (!Arrays.equals(newSignature, signature)) {
+			throw new SignatureException("Invalid signature!");
+		}
+	}
+
+	@Override
+	public int getSignatureLength() {
+		return SIGNATURE_LENGTH;
 	}
 
 	// /////////////////////////////////////////////////
 	// non-public API
 	// /////////////////////////////////////////////////
+
+	byte[] signAndPrefix(byte[] sessionData) {
+		assertNotNullAndEmpty(sessionData);
+
+		byte[] signature = sign(sessionData);
+		byte[] signedSessionData = ArrayUtils.addAll(signature, sessionData);
+		return signedSessionData;
+	}
 
 	private Key buildKey(byte[] key, String algorithmus)
 			throws NoSuchAlgorithmException {
