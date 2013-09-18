@@ -40,15 +40,6 @@ public interface BlacklistStrategy {
 	 * TODO
 	 * 
 	 * @param cookieValue
-	 * @return
-	 */
-	boolean contains(String cookieValue);
-
-	/**
-	 * TODO
-	 * 
-	 * @param cookieValue
 	 */
 	void check(String cookieValue) throws BlacklistException;
-
 }

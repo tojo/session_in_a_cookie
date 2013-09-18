@@ -22,16 +22,16 @@
  */
 package com.github.tojo.session.cookies;
 
+/**
+ * TODO
+ * 
+ * @author github.com/tojo
+ */
 public class BlacklistStrategyDefaultImpl implements BlacklistStrategy {
 
 	@Override
 	public void add(String cookieValue) {
 		// noop
-	}
-
-	@Override
-	public boolean contains(String cookieValue) {
-		return false;
 	}
 
 	@Override
