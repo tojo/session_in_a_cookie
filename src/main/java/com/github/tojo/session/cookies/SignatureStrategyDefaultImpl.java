@@ -45,7 +45,7 @@ class SignatureStrategyDefaultImpl implements SignatureStrategy {
 	static final int SIGNATURE_LENGTH = 32;
 	static final String HMAC_SHA256 = "HmacSHA256";
 
-	private byte[] secret;
+	private final Key key;
 
 	/**
 	 * TODO
@@ -53,7 +53,11 @@ class SignatureStrategyDefaultImpl implements SignatureStrategy {
 	 * @param secret
 	 */
 	public SignatureStrategyDefaultImpl(byte[] secret) {
-		this.secret = secret;
+		try {
+			this.key = buildKey(secret, HMAC_SHA256);
+		} catch (NoSuchAlgorithmException e) {
+			throw new InitializationError(e);
+		}
 	}
 
 	@Override
@@ -62,7 +66,6 @@ class SignatureStrategyDefaultImpl implements SignatureStrategy {
 
 		byte[] signature = null;
 		try {
-			Key key = buildKey(secret, HMAC_SHA256);
 			Mac mac = Mac.getInstance(HMAC_SHA256);
 			mac.init(key);
 			signature = mac.doFinal(sessionData);

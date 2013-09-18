@@ -48,8 +48,8 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	static final String AES = "AES";
 	static final String SHA_256 = "SHA-256";
 
-	private byte[] secret;
-	private IvParameterSpec ivspec;
+	private final IvParameterSpec ivspec;
+	private final Key key;
 
 	/**
 	 * TODO
@@ -59,8 +59,12 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	 */
 	public CipherStrategyDefaultImpl(byte[] secret, byte[] iv) {
 		super();
-		this.secret = secret;
 		this.ivspec = new IvParameterSpec(iv);
+		try {
+			this.key = buildKey(secret, AES);
+		} catch (NoSuchAlgorithmException e) {
+			throw new InitializationError(e);
+		}
 	}
 
 	@Override
@@ -86,7 +90,6 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 		byte[] output = null;
 		try {
 			Cipher cipher = Cipher.getInstance(AES_CTR_PKCS5PADDING);
-			Key key = buildKey(secret, AES);
 			cipher.init(mode, key, ivspec);
 			output = cipher.doFinal(input);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException
@@ -102,7 +105,6 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	private Key buildKey(byte[] key, String algorithmus)
 			throws NoSuchAlgorithmException {
 		assertNotNullAndEmpty(key);
-
 		MessageDigest digester = MessageDigest.getInstance(SHA_256);
 		digester.update(key);
 		SecretKeySpec spec = new SecretKeySpec(digester.digest(), algorithmus);
