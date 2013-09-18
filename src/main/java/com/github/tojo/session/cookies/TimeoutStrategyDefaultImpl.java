@@ -29,4 +29,9 @@ public class TimeoutStrategyDefaultImpl implements TimeoutStrategy {
 		// noop
 	}
 
+	@Override
+	public void timeout(String cookieValue) {
+		// noop
+	}
+
 }

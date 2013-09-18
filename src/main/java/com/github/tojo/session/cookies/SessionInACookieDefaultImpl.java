@@ -126,8 +126,7 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 
 	@Override
 	void destroy(String cookieValue) {
-		// TODO Auto-generated method stub
-
+		timeoutStrategy.timeout(cookieValue);
 	}
 
 	// /////////////////////////////////////////////////

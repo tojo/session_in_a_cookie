@@ -35,4 +35,11 @@ public interface TimeoutStrategy {
 	 * @param cookieValue
 	 */
 	void hit(String cookieValue);
+	
+	/**
+	 * TODO
+	 * 
+	 * @param cookieValue
+	 */
+	void timeout(String cookieValue);
 }
