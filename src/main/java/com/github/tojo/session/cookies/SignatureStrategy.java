@@ -35,7 +35,7 @@ interface SignatureStrategy {
 	 * 
 	 * @param sessionData
 	 * @return the calculated signature for the given session data.
-	 * @throws IllegalArgumentException
+	 * @throws InvalidInputFormatException
 	 *             if the sessionData is null or empty
 	 */
 	byte[] sign(byte[] sessionData);
@@ -46,7 +46,7 @@ interface SignatureStrategy {
 	 * 
 	 * @param sessionData
 	 * @return the combined signature + session data.
-	 * @throws IllegalArgumentException
+	 * @throws InvalidInputFormatException
 	 *             if the sessionData is null or empty
 	 */
 	byte[] signAndPrefix(byte[] sessionData);
@@ -60,11 +60,10 @@ interface SignatureStrategy {
 	 * @return The valid session data without the signature.
 	 * @throws SignatureException
 	 *             if the signature is invalid
-	 * @throws IllegalArgumentException
+	 * @throws InvalidInputFormatException
 	 *             if the cookieValue is null, empty or too short
 	 */
-	byte[] validateSignature(byte[] cookieValue)
-			throws SignatureException;
+	byte[] validateSignature(byte[] cookieValue) throws SignatureException;
 
 	/**
 	 * Validates the session data with the given signature.
@@ -75,7 +74,7 @@ interface SignatureStrategy {
 	 *            the signature
 	 * @throws SignatureException
 	 *             if the signature is invalid
-	 * @throws IllegalArgumentException
+	 * @throws InvalidInputFormatException
 	 *             if the sessionData or signature is null, empty or too short
 	 */
 	void validateSignature(byte[] sessionData, byte[] signature)

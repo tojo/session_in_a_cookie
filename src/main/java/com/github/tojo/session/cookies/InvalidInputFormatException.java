@@ -23,35 +23,44 @@
 package com.github.tojo.session.cookies;
 
 /**
- * Methods to encrypt session data and decrypt cookie values.
+ * This runtime exception is thrown if an input value doesn't match the API
+ * specification.
  * 
  * @author github.com/tojo
  */
-interface CipherStrategy {
+public class InvalidInputFormatException extends RuntimeException {
+
+	private static final long serialVersionUID = 1L;
 
 	/**
-	 * This method takes as an argument the raw session data and returns the
-	 * encrypted cookie value.
-	 * 
-	 * @param sessionData
-	 *            the raw session data
-	 * @return the encrypted cookie value.
-	 * @throws CipherStrategyException
-	 * @throws InvalidInputFormatException
-	 *             if the sessionData is null or empty
+	 * Constructs a {@code InvalidInputFormatException} with no detail message.
 	 */
-	byte[] encipher(byte[] sessionData) throws CipherStrategyException;
+	public InvalidInputFormatException() {
+		super();
+	}
 
 	/**
-	 * This method takes as an argument the encrypted cookie value, decrypts the
-	 * session data and returns it.
+	 * Constructs a {@code InvalidInputFormatException} with the specified detail
+	 * message.
 	 * 
-	 * @param cookieValue
-	 *            The encrypted cookie value.
-	 * @return The raw session data.
-	 * @throws CipherStrategyException
-	 * @throws InvalidInputFormatException
-	 *             if the cookieValue is null or empty
+	 * @param s
+	 *            the detail message.
 	 */
-	byte[] decipher(byte[] cookieValue) throws CipherStrategyException;
+	public InvalidInputFormatException(String s) {
+		super(s);
+	}
+
+	/**
+	 * Constructs a {@code InvalidInputFormatException} with the specified detail message
+	 * and cause.
+	 * 
+	 * @param s
+	 *            the detail message
+	 * @param cause
+	 *            the cause
+	 */
+	public InvalidInputFormatException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
 }

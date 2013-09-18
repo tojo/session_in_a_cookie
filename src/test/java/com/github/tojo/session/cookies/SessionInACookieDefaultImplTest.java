@@ -50,7 +50,7 @@ public class SessionInACookieDefaultImplTest extends SessionInACookieBaseTest {
 				sessionData));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = InvalidInputFormatException.class)
 	public void testEncryptSignAndEncodeWithNull()
 			throws CipherStrategyException {
 		sut.encryptSignAndEncode(null);

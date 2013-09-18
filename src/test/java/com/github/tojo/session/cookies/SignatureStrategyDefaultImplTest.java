@@ -87,7 +87,7 @@ public class SignatureStrategyDefaultImplTest extends SessionInACookieBaseTest {
 		sut.validateSignature(sampleSessionDataFooBarAsBytes, signatureLoremIpsum);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = InvalidInputFormatException.class)
 	public void testValidateEmptySignature() throws Exception {
 		sut.validateSignature(null);
 	}

@@ -53,7 +53,7 @@ public abstract class SessionInACookie {
 	 * @throws SignatureException
 	 * @throws CipherStrategyException
 	 * @throws BlacklistException
-	 * @throws IllegalArgumentException
+	 * @throws InvalidInputFormatException
 	 *             if the cookieValue is null or empty
 	 */
 	abstract byte[] decode(String cookieValue) throws TimeoutException,
@@ -64,7 +64,7 @@ public abstract class SessionInACookie {
 	 * 
 	 * @param cookieValue
 	 *            the value of the session-in-a-cookie cookie
-	 * @throws IllegalArgumentException
+	 * @throws InvalidInputFormatException
 	 *             if the cookieValue is null or empty
 	 */
 	abstract void destroy(String cookieValue);
@@ -93,13 +93,13 @@ public abstract class SessionInACookie {
 
 	static void assertNotNullAndEmpty(byte[] input) {
 		if (input == null || input.length == 0)
-			throw new IllegalArgumentException("Input byte[] is null or empty!");
+			throw new InvalidInputFormatException("Input byte[] is null or empty!");
 	}
 
 	static void assertMinLength(byte[] input, int minLength) {
 		assertNotNullAndEmpty(input);
 		if (minLength > input.length)
-			throw new IllegalArgumentException(
+			throw new InvalidInputFormatException(
 					"Input byte[] is to short! The length must be at least "
 							+ minLength);
 	}
