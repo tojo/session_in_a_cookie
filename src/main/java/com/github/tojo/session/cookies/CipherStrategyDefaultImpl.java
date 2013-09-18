@@ -44,7 +44,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 class CipherStrategyDefaultImpl implements CipherStrategy {
 
-	static final String AES_ECB_PKCS5PADDING = "AES/CBC/PKCS5PADDING";
+	static final String AES_CTR_PKCS5PADDING = "AES/CTR/PKCS5PADDING";
 	static final String AES = "AES";
 	static final String SHA_256 = "SHA-256";
 
@@ -85,7 +85,7 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 
 		byte[] output = null;
 		try {
-			Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
+			Cipher cipher = Cipher.getInstance(AES_CTR_PKCS5PADDING);
 			Key key = buildKey(secret, AES);
 			cipher.init(mode, key, ivspec);
 			output = cipher.doFinal(input);
