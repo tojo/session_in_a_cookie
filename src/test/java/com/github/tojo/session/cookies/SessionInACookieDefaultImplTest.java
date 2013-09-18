@@ -22,13 +22,12 @@
  */
 package com.github.tojo.session.cookies;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SessionInACookieDefaultImplTest extends SessionInACookieBaseTest {
