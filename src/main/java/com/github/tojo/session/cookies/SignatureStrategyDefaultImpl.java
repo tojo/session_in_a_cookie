@@ -72,43 +72,34 @@ class SignatureStrategyDefaultImpl implements SignatureStrategy {
 			mac.init(key);
 			signature = mac.doFinal(sessionData);
 		} catch (NoSuchAlgorithmException | InvalidKeyException e) {
-			throw new RuntimeException(e);
+			throw new InitializationError(e);
 		}
-		return signature;
+
+		byte[] signedSessionData = ArrayUtils.addAll(signature, sessionData);
+		return signedSessionData;
 	}
 
 	@Override
-	public void validateSignature(byte[] sessionData, byte[] signature)
-			throws SignatureException {
-		assertNotNullAndEmpty(sessionData);
-		assertMinLength(signature, SIGNATURE_LENGTH);
+	public byte[] validate(byte[] signedSessionData) throws SignatureException {
+		assertNotNullAndEmpty(signedSessionData);
+		assertMinLength(signedSessionData, SIGNATURE_LENGTH);
 
-		if (SIGNATURE_LENGTH != signature.length) {
-			throw new SignatureException("Invalid signature length. Expected: "
-					+ SIGNATURE_LENGTH + ", is: " + signature.length);
-		}
-		byte[] newSignature = sign(sessionData);
+		byte[] signature = ArrayUtils.subarray(signedSessionData, 0,
+				SIGNATURE_LENGTH);
+		byte[] sessionData = ArrayUtils.subarray(signedSessionData,
+				SIGNATURE_LENGTH, signedSessionData.length);
+
+		byte[] newSignature = ArrayUtils.subarray(sign(sessionData), 0,
+				SIGNATURE_LENGTH);
 		if (!Arrays.equals(newSignature, signature)) {
 			throw new SignatureException("Invalid signature!");
 		}
-	}
-
-	@Override
-	public int getSignatureLength() {
-		return SIGNATURE_LENGTH;
+		return sessionData;
 	}
 
 	// /////////////////////////////////////////////////
 	// non-public API
 	// /////////////////////////////////////////////////
-
-	byte[] signAndPrefix(byte[] sessionData) {
-		assertNotNullAndEmpty(sessionData);
-
-		byte[] signature = sign(sessionData);
-		byte[] signedSessionData = ArrayUtils.addAll(signature, sessionData);
-		return signedSessionData;
-	}
 
 	private Key buildKey(byte[] key, String algorithmus)
 			throws NoSuchAlgorithmException {

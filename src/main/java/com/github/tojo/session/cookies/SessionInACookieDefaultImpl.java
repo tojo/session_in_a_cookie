@@ -135,9 +135,7 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 		byte[] encryptedSessionData = cipherStrategy.encipher(sessionData);
 
 		// 2. sign
-		byte[] signature = signatureStrategy.sign(encryptedSessionData);
-		byte[] signedSessionData = ArrayUtils.addAll(signature,
-				encryptedSessionData);
+		byte[] signedSessionData = signatureStrategy.sign(encryptedSessionData);
 
 		// 3. decode
 		byte[] cookieValue = Base64.encodeBase64(signedSessionData);
@@ -155,13 +153,8 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 		byte[] encryptedAndSignedSessionData = Base64.decodeBase64(cookieValue);
 
 		// 2. validate signature
-		byte[] signature = ArrayUtils.subarray(encryptedAndSignedSessionData,
-				0, signatureStrategy.getSignatureLength());
-		byte[] encryptedSessionData = ArrayUtils.subarray(
-				encryptedAndSignedSessionData,
-				signatureStrategy.getSignatureLength(),
-				encryptedAndSignedSessionData.length);
-		signatureStrategy.validateSignature(encryptedSessionData, signature);
+		byte[] encryptedSessionData = signatureStrategy
+				.validate(encryptedAndSignedSessionData);
 
 		// 3. encrypt
 		byte[] sessionData = cipherStrategy.decipher(encryptedSessionData);

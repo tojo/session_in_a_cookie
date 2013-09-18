@@ -44,24 +44,19 @@ public class SignatureStrategyDefaultImplTest extends SessionInACookieBaseTest {
 
 	@Test
 	public void testSignSessionData() throws Exception {
-		byte[] signatureLoremIpsum = sut
-				.sign(sampleSessionDataLoremIpsumAsBytes);
-		byte[] signatureFooBar = sut.sign(sampleSessionDataFooBarAsBytes);
-		assertEquals(SIGNATURE_LENGTH, signatureLoremIpsum.length);
-		assertEquals(SIGNATURE_LENGTH, signatureFooBar.length);
-		assertNotEquals(new String(signatureLoremIpsum, "UTF-8"), new String(
-				signatureFooBar, "UTF-8"));
+		byte[] signedLoremIpsum = sut.sign(sampleSessionDataLoremIpsumAsBytes);
+		byte[] signedFooBar = sut.sign(sampleSessionDataFooBarAsBytes);
+		assertEquals(623, signedLoremIpsum.length);
+		assertEquals(40, signedFooBar.length);
 	}
 
 	@Test
 	public void testSignAndPrefixSessionData() throws Exception {
-		byte[] signatureLoremIpsum = sut
+		byte[] signedsampleSessionDataLoremIpsumAsBytes = sut
 				.sign(sampleSessionDataLoremIpsumAsBytes);
-		byte[] signedSessionData = sut
-				.signAndPrefix(sampleSessionDataLoremIpsumAsBytes);
-		sut.validateSignature(sampleSessionDataLoremIpsumAsBytes,
-				signatureLoremIpsum);
-		validateSignature(signedSessionData);
+		byte[] signedSessionData = sut.sign(sampleSessionDataLoremIpsumAsBytes);
+		sut.validate(signedsampleSessionDataLoremIpsumAsBytes);
+		sut.validate(signedSessionData);
 
 		// extract the session data and check it
 		byte[] sessionData = ArrayUtils.subarray(signedSessionData,
@@ -72,36 +67,16 @@ public class SignatureStrategyDefaultImplTest extends SessionInACookieBaseTest {
 
 	@Test
 	public void testValidateSignature() throws Exception {
-		byte[] signatureLoremIpsum = sut
-				.sign(sampleSessionDataLoremIpsumAsBytes);
-		byte[] signatureFooBar = sut.sign(sampleSessionDataFooBarAsBytes);
-		sut.validateSignature(sampleSessionDataLoremIpsumAsBytes,
-				signatureLoremIpsum);
-		sut.validateSignature(sampleSessionDataFooBarAsBytes, signatureFooBar);
-
-		byte[] signedSessionDataLoremIpsum = sut
-				.signAndPrefix(sampleSessionDataLoremIpsumAsBytes);
-		byte[] sessionData = validateSignature(signedSessionDataLoremIpsum);
-		assertTrue(Arrays.equals(sampleSessionDataLoremIpsumAsBytes,
-				sessionData));
+		byte[] signedLoremIpsum = sut.sign(sampleSessionDataLoremIpsumAsBytes);
+		byte[] signedFooBar = sut.sign(sampleSessionDataFooBarAsBytes);
+		sut.validate(signedLoremIpsum);
+		sut.validate(signedFooBar);
 	}
 
 	@Test(expected = SignatureException.class)
 	public void testValidateInvalidSignature() throws Exception {
-		byte[] signatureLoremIpsum = sut
-				.sign(sampleSessionDataLoremIpsumAsBytes);
-		sut.validateSignature(sampleSessionDataFooBarAsBytes,
-				signatureLoremIpsum);
+		byte[] signedLoremIpsum = sut.sign(sampleSessionDataLoremIpsumAsBytes);
+		signedLoremIpsum[0] = 0;
+		sut.validate(signedLoremIpsum);
 	}
-
-	byte[] validateSignature(byte[] signedSessionData)
-			throws SignatureException {
-		byte[] signature = ArrayUtils.subarray(signedSessionData, 0,
-				SIGNATURE_LENGTH);
-		byte[] sessionData = ArrayUtils.subarray(signedSessionData,
-				SIGNATURE_LENGTH, signedSessionData.length);
-		sut.validateSignature(sessionData, signature);
-		return sessionData;
-	}
-
 }

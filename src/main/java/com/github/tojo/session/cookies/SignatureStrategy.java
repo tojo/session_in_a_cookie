@@ -31,34 +31,30 @@ package com.github.tojo.session.cookies;
 interface SignatureStrategy {
 
 	/**
-	 * Calculates a signature for the given session data.
+	 * Calculates a signature for the given session data and returns the session
+	 * data prefixed with the signature.
 	 * 
 	 * @param sessionData
-	 * @return the calculated signature for the given session data.
+	 * @return the session data with the calculated signature as prefix
 	 * @throws InvalidInputFormatException
 	 *             if the sessionData is null or empty
 	 */
 	byte[] sign(byte[] sessionData);
 
 	/**
-	 * Validates the session data with the given signature.
+	 * Validates the session data. For this use case the method extracts the
+	 * signature, which is stored as prefix in the session data, and validates
+	 * the session data.
 	 * 
-	 * @param sessionData
+	 * @param signedSessionData
 	 *            the signed session data
-	 * @param signature
-	 *            the signature
+	 * @return the unsigned session data if the signature validation was
+	 *         successful
 	 * @throws SignatureException
 	 *             if the signature is invalid
 	 * @throws InvalidInputFormatException
 	 *             if the sessionData or signature is null, empty or too short
 	 */
-	void validateSignature(byte[] sessionData, byte[] signature)
+	byte[] validate(byte[] signedSessionData)
 			throws SignatureException;
-
-	/**
-	 * Getter for the strategy specific fixed length of created signatures.
-	 * 
-	 * @return the fixed length of a signature
-	 */
-	int getSignatureLength();
 }
