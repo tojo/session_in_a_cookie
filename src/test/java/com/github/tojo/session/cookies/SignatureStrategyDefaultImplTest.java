@@ -24,7 +24,6 @@ package com.github.tojo.session.cookies;
 
 import static com.github.tojo.session.cookies.SignatureStrategyDefaultImpl.SIGNATURE_LENGTH;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;

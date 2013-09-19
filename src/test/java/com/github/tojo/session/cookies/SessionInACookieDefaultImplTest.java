@@ -37,7 +37,7 @@ public class SessionInACookieDefaultImplTest extends SessionInACookieBaseTest {
 	@Before
 	public void setUp() throws Exception {
 		sut = (SessionInACookieDefaultImpl) SessionInACookie
-				.getDefaultInstance(secret, iv);
+				.getDefaultInstance(secret);
 	}
 
 	@Test

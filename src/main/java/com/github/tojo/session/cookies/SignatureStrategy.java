@@ -28,7 +28,7 @@ package com.github.tojo.session.cookies;
  * 
  * @author github.com/tojo
  */
-interface SignatureStrategy {
+public interface SignatureStrategy {
 
 	/**
 	 * Calculates a signature for the given session data and returns the session

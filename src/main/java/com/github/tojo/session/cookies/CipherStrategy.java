@@ -27,7 +27,7 @@ package com.github.tojo.session.cookies;
  * 
  * @author github.com/tojo
  */
-interface CipherStrategy {
+public interface CipherStrategy {
 
 	/**
 	 * This method takes as an argument the raw session data and returns the
@@ -55,5 +55,5 @@ interface CipherStrategy {
 	 * @throws InvalidInputFormatException
 	 *             if the cookieValue is null or empty
 	 */
-	byte[] decipher(byte[] cookieValue) throws CipherStrategyException;
+	byte[] decipher(byte[] cookieValue);
 }

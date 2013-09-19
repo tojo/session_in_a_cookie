@@ -34,7 +34,7 @@ public class CipherStrategyDefaultImplTest extends SessionInACookieBaseTest {
 
 	@Before
 	public void setUp() throws Exception {
-		sut = new CipherStrategyDefaultImpl(secret, iv);
+		sut = new CipherStrategyDefaultImpl(secret);
 	}
 
 	@Test

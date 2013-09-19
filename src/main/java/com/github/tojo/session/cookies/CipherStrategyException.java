@@ -28,7 +28,7 @@ package com.github.tojo.session.cookies;
  * 
  * @author github.com/tojo
  */
-public class CipherStrategyException extends Exception {
+public class CipherStrategyException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 

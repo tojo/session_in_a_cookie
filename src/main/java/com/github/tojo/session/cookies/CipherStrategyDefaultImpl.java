@@ -29,6 +29,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -36,6 +37,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Default implementation of {@link CipherStrategy}.
@@ -56,12 +59,12 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	 * 
 	 * @param secret
 	 *            shared secret for en-/decryption
-	 * @param iv
-	 *            initial vector for en-/decryption
 	 */
-	public CipherStrategyDefaultImpl(byte[] secret, byte[] iv) {
+	public CipherStrategyDefaultImpl(byte[] secret) {
 		super();
-		this.ivspec = new IvParameterSpec(iv);
+		this.ivspec = new IvParameterSpec(ArrayUtils.subarray(UUID.randomUUID()
+				.toString().getBytes(), 0, 16));
+		;
 		try {
 			this.key = buildKey(secret, AES);
 		} catch (NoSuchAlgorithmException e) {
@@ -76,7 +79,7 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	}
 
 	@Override
-	public byte[] decipher(byte[] cookieValue) throws CipherStrategyException {
+	public byte[] decipher(byte[] cookieValue) {
 		assertNotNullAndEmpty(cookieValue);
 		return encryptOrDecrypt(cookieValue, Cipher.DECRYPT_MODE);
 	}
@@ -85,8 +88,7 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	// non-public API
 	// /////////////////////////////////////////////////
 
-	private byte[] encryptOrDecrypt(byte[] input, int mode)
-			throws CipherStrategyException {
+	private byte[] encryptOrDecrypt(byte[] input, int mode) {
 		assertNotNullAndEmpty(input);
 
 		byte[] output = null;

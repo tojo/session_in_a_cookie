@@ -31,6 +31,32 @@ public abstract class SessionInACookie {
 
 	private static SessionInACookie instance = null;
 
+	final CipherStrategy cipherStrategy;
+	final SignatureStrategy signatureStrategy;
+	final TimeoutStrategy timeoutStrategy;
+	final BlacklistStrategy blacklistStrategy;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param secret
+	 *            shared secret for en-/decryption
+	 * @param iv
+	 *            initial vector for en-/decryption
+	 * @param cipherStrategy
+	 * @param signatureStrategy
+	 * @param timeoutStrategy
+	 * @param blacklistStrategy
+	 */
+	public SessionInACookie(CipherStrategy cipherStrategy,
+			SignatureStrategy signatureStrategy,
+			TimeoutStrategy timeoutStrategy, BlacklistStrategy blacklistStrategy) {
+		this.cipherStrategy = cipherStrategy;
+		this.signatureStrategy = signatureStrategy;
+		this.timeoutStrategy = timeoutStrategy;
+		this.blacklistStrategy = blacklistStrategy;
+	}
+
 	/**
 	 * Returns the value which has to be stored in the session-in-a-cookie for
 	 * the given session data.
@@ -46,7 +72,8 @@ public abstract class SessionInACookie {
 	 * @throws CipherStrategyException
 	 *             if the session data couldn't be encrypted
 	 */
-	abstract String encode(byte[] sessionData) throws CipherStrategyException;
+	public abstract String encode(byte[] sessionData)
+			throws CipherStrategyException;
 
 	/**
 	 * This method checks the blacklist {@link BlacklistStrategy#check(String)},
@@ -68,25 +95,59 @@ public abstract class SessionInACookie {
 	 * @throws InvalidInputFormatException
 	 *             if the cookieValue is null or empty
 	 */
-	abstract byte[] decode(String cookieValue) throws TimeoutException,
-			SignatureException, CipherStrategyException, BlacklistException;
+	public abstract byte[] decode(String cookieValue) throws TimeoutException,
+			SignatureException, BlacklistException;
+
+	public CipherStrategy getCipherStrategy() {
+		return cipherStrategy;
+	}
+
+	public SignatureStrategy getSignatureStrategy() {
+		return signatureStrategy;
+	}
+
+	public TimeoutStrategy getTimeoutStrategy() {
+		return timeoutStrategy;
+	}
+
+	public BlacklistStrategy getBlacklistStrategy() {
+		return blacklistStrategy;
+	}
 
 	/**
 	 * Get the default {@link SessionInACookie} implementation object.
 	 * 
 	 * @param secret
 	 *            the shared secret for en- and decryption.
-	 * @param iv
-	 *            initial vector for en- and decryption
 	 * @return the default {@link SessionInACookie} object
 	 */
-	public static SessionInACookie getDefaultInstance(byte[] secret, byte[] iv) {
+	public static SessionInACookie getDefaultInstance(byte[] secret) {
 		if (instance == null) {
 			instance = new SessionInACookieDefaultImpl(
-					new CipherStrategyDefaultImpl(secret, iv),
+					new CipherStrategyDefaultImpl(secret),
 					new SignatureStrategyDefaultImpl(secret),
 					new TimeoutStrategyDefaultImpl(),
 					new BlacklistStrategyDefaultImpl());
+		}
+		return instance;
+	}
+
+	/**
+	 * Get the default {@link SessionInACookie} implementation object.
+	 * 
+	 * @param secret
+	 *            the shared secret for en- and decryption.
+	 * @param timeoutStrategy
+	 * @param blacklistStrategy
+	 * @return the default {@link SessionInACookie} object
+	 */
+	public static SessionInACookie getDefaultInstance(byte[] secret,
+			TimeoutStrategy timeoutStrategy, BlacklistStrategy blacklistStrategy) {
+		if (instance == null) {
+			instance = new SessionInACookieDefaultImpl(
+					new CipherStrategyDefaultImpl(secret),
+					new SignatureStrategyDefaultImpl(secret), timeoutStrategy,
+					blacklistStrategy);
 		}
 		return instance;
 	}

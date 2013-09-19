@@ -33,13 +33,9 @@ import org.apache.commons.lang.ArrayUtils;
  * 
  * @author github.com/tojo
  */
-class SessionInACookieDefaultImpl extends SessionInACookie {
+public class SessionInACookieDefaultImpl extends SessionInACookie {
 
 	private static final int SESSION_ID_LENGTH = 36;
-	private final CipherStrategy cipherStrategy;
-	private final SignatureStrategy signatureStrategy;
-	private TimeoutStrategy timeoutStrategy;
-	private BlacklistStrategy blacklistStrategy;
 
 	// TODO Transformer strategies
 
@@ -58,14 +54,12 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	public SessionInACookieDefaultImpl(CipherStrategy cipherStrategy,
 			SignatureStrategy signatureStrategy,
 			TimeoutStrategy timeoutStrategy, BlacklistStrategy blacklistStrategy) {
-		this.cipherStrategy = cipherStrategy;
-		this.signatureStrategy = signatureStrategy;
-		this.timeoutStrategy = timeoutStrategy;
-		this.blacklistStrategy = blacklistStrategy;
+		super(cipherStrategy, signatureStrategy, timeoutStrategy,
+				blacklistStrategy);
 	}
 
 	@Override
-	String encode(byte[] sessionData) throws CipherStrategyException {
+	public String encode(byte[] sessionData) throws CipherStrategyException {
 		try {
 			// 1. create session id
 			byte[] sessionId = UUID.randomUUID().toString().getBytes("UTF-8");
@@ -88,8 +82,8 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	}
 
 	@Override
-	byte[] decode(String cookieValue) throws TimeoutException,
-			SignatureException, CipherStrategyException, BlacklistException {
+	public byte[] decode(String cookieValue) throws TimeoutException,
+			SignatureException, BlacklistException {
 
 		try {
 			// 1. check blacklist
@@ -141,7 +135,7 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 	}
 
 	byte[] decodeDecryptAndVerifySignature(byte[] cookieValue)
-			throws SignatureException, CipherStrategyException {
+			throws SignatureException {
 		assertNotNullAndEmpty(cookieValue);
 
 		// 1. decode
