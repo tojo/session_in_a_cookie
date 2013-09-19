@@ -23,7 +23,7 @@
 package com.github.tojo.session.cookies;
 
 /**
- * TODO
+ * Default implementation of {@link BlacklistStrategy}.
  * 
  * @author github.com/tojo
  */

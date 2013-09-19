@@ -38,7 +38,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * TODO
+ * Default implementation of {@link CipherStrategy}.
  * 
  * @author github.com/tojo
  */
@@ -52,10 +52,12 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	private final Key key;
 
 	/**
-	 * TODO
+	 * Constructor
 	 * 
 	 * @param secret
+	 *            shared secret for en-/decryption
 	 * @param iv
+	 *            initial vector for en-/decryption
 	 */
 	public CipherStrategyDefaultImpl(byte[] secret, byte[] iv) {
 		super();

@@ -37,7 +37,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
- * TODO
+ * Default implementation of {@link SignatureStrategy}.
  * 
  * @author github.com/tojo
  */
@@ -50,9 +50,10 @@ class SignatureStrategyDefaultImpl implements SignatureStrategy {
 	private final Key key;
 
 	/**
-	 * TODO
+	 * Constructor
 	 * 
 	 * @param secret
+	 *            shared secret for signing
 	 */
 	public SignatureStrategyDefaultImpl(byte[] secret) {
 		try {

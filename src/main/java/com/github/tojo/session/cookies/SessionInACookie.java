@@ -32,42 +32,44 @@ public abstract class SessionInACookie {
 	private static SessionInACookie instance = null;
 
 	/**
-	 * TODO
+	 * Returns the value which has to be stored in the session-in-a-cookie for
+	 * the given session data.
+	 * 
+	 * The session data will be prefixed with a unique session id, encryped
+	 * through {@link CipherStrategy#encipher(byte[])}, signed by
+	 * {@link SignatureStrategy#sign(byte[])} and finally Base64 encoded.
 	 * 
 	 * @param sessionData
 	 *            the serialized session-in-a-cookie session data
 	 * 
 	 * @return the value of the session-in-a-cookie cookie
 	 * @throws CipherStrategyException
+	 *             if the session data couldn't be encrypted
 	 */
 	abstract String encode(byte[] sessionData) throws CipherStrategyException;
 
 	/**
-	 * TODO
+	 * This method checks the blacklist {@link BlacklistStrategy#check(String)},
+	 * advance the timeout {@link TimeoutStrategy#advance(String)} and decode
+	 * the serialized session-in-a-cookie session data.
 	 * 
 	 * @param cookieValue
 	 *            the value of the session-in-a-cookie cookie
 	 * 
 	 * @return the serialized session-in-a-cookie session data
 	 * @throws TimeoutException
+	 *             if the session has timed out
 	 * @throws SignatureException
+	 *             if the signature is invalid
 	 * @throws CipherStrategyException
+	 *             if the session data couldn't be decrypted
 	 * @throws BlacklistException
+	 *             if the session has been blacklisted
 	 * @throws InvalidInputFormatException
 	 *             if the cookieValue is null or empty
 	 */
 	abstract byte[] decode(String cookieValue) throws TimeoutException,
 			SignatureException, CipherStrategyException, BlacklistException;
-
-	/**
-	 * TODO
-	 * 
-	 * @param cookieValue
-	 *            the value of the session-in-a-cookie cookie
-	 * @throws InvalidInputFormatException
-	 *             if the cookieValue is null or empty
-	 */
-	abstract void destroy(String cookieValue);
 
 	/**
 	 * Get the default {@link SessionInACookie} implementation object.
@@ -82,7 +84,9 @@ public abstract class SessionInACookie {
 		if (instance == null) {
 			instance = new SessionInACookieDefaultImpl(
 					new CipherStrategyDefaultImpl(secret, iv),
-					new SignatureStrategyDefaultImpl(secret), new TimeoutStrategyDefaultImpl(), new BlacklistStrategyDefaultImpl());
+					new SignatureStrategyDefaultImpl(secret),
+					new TimeoutStrategyDefaultImpl(),
+					new BlacklistStrategyDefaultImpl());
 		}
 		return instance;
 	}
@@ -93,7 +97,8 @@ public abstract class SessionInACookie {
 
 	static void assertNotNullAndEmpty(byte[] input) {
 		if (input == null || input.length == 0)
-			throw new InvalidInputFormatException("Input byte[] is null or empty!");
+			throw new InvalidInputFormatException(
+					"Input byte[] is null or empty!");
 	}
 
 	static void assertMinLength(byte[] input, int minLength) {

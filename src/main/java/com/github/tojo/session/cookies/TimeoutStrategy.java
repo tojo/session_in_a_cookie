@@ -23,23 +23,40 @@
 package com.github.tojo.session.cookies;
 
 /**
- * TODO
+ * Methods to issue, advance and expire sessions. The advance method signals
+ * through a {@link TimeoutException} that the session was expired or not
+ * well-known.
  * 
  * @author github.com/tojo
  */
 public interface TimeoutStrategy {
 
 	/**
-	 * TODO
+	 * Issues and initialize the timeout handling for the given session / cookie
+	 * value.
 	 * 
 	 * @param cookieValue
+	 *            the session / cookie value for which the timeout handling
+	 *            infrastructure should be initialized
 	 */
-	void hit(String cookieValue);
-	
+	void issue(String cookieValue);
+
 	/**
-	 * TODO
+	 * Advance the session timeout.
 	 * 
 	 * @param cookieValue
+	 *            the session / cookie value which should be advanced
+	 * @throws TimeoutException
+	 *             if the session couldn't advanced, e.g. because it is expired
+	 *             or not well-known.
 	 */
-	void timeout(String cookieValue);
+	void advance(String cookieValue) throws TimeoutException;
+
+	/**
+	 * Mark a session as expired.
+	 * 
+	 * @param cookieValue
+	 *            the session / cookie value which should be marked as expired
+	 */
+	void expire(String cookieValue);
 }

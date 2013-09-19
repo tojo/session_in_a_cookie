@@ -23,23 +23,31 @@
 package com.github.tojo.session.cookies;
 
 /**
- * TODO
+ * Methods to add sessions to a blacklist and check if it is blacklisted. The
+ * check method signals through a {@link BlacklistException} that the session is
+ * blacklisted.
  * 
  * @author github.com/tojo
  */
 public interface BlacklistStrategy {
 
 	/**
-	 * TODO
+	 * Add a session to the blacklist.
 	 * 
 	 * @param cookieValue
+	 *            the session / cookie value to blacklist.
 	 */
 	void add(String cookieValue);
 
 	/**
-	 * TODO
+	 * Check if a session / cookie value is blacklisted. If yes this method
+	 * signals through a {@link BlacklistException} that the session is
+	 * blacklisted.
 	 * 
 	 * @param cookieValue
+	 *            the session / cookie value to blacklist.
+	 * @throws BlacklistException
+	 *             if the session is blacklisted.
 	 */
 	void check(String cookieValue) throws BlacklistException;
 }

@@ -37,6 +37,7 @@ interface CipherStrategy {
 	 *            the raw session data
 	 * @return the encrypted cookie value.
 	 * @throws CipherStrategyException
+	 *             if the session data couldn't be encrypted
 	 * @throws InvalidInputFormatException
 	 *             if the sessionData is null or empty
 	 */
@@ -50,6 +51,7 @@ interface CipherStrategy {
 	 *            The encrypted cookie value.
 	 * @return The raw session data.
 	 * @throws CipherStrategyException
+	 *             if the cookieValue couldn't be decrypted
 	 * @throws InvalidInputFormatException
 	 *             if the cookieValue is null or empty
 	 */

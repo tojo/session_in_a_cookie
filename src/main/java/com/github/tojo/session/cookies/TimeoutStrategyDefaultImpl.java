@@ -25,13 +25,17 @@ package com.github.tojo.session.cookies;
 public class TimeoutStrategyDefaultImpl implements TimeoutStrategy {
 
 	@Override
-	public void hit(String cookieValue) {
+	public void issue(String cookieValue) {
 		// noop
 	}
 
 	@Override
-	public void timeout(String cookieValue) {
+	public void advance(String cookieValue) {
 		// noop
 	}
 
+	@Override
+	public void expire(String cookieValue) {
+		// noop
+	}
 }

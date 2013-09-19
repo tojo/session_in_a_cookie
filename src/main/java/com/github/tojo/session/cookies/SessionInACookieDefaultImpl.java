@@ -79,7 +79,7 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 					encryptSignAndEncode(dataWithSessionId), "UTF-8");
 
 			// 4. hit timeout strategy
-			timeoutStrategy.hit(cookieValue);
+			timeoutStrategy.issue(cookieValue);
 
 			return cookieValue;
 		} catch (UnsupportedEncodingException e) {
@@ -95,8 +95,8 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 			// 1. check blacklist
 			blacklistStrategy.check(cookieValue);
 
-			// 2. hit timeout
-			timeoutStrategy.hit(cookieValue);
+			// 2. advance session timeout
+			timeoutStrategy.advance(cookieValue);
 
 			// 3. decode
 			byte[] dataWithSessionId;
@@ -116,11 +116,6 @@ class SessionInACookieDefaultImpl extends SessionInACookie {
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	void destroy(String cookieValue) {
-		timeoutStrategy.timeout(cookieValue);
 	}
 
 	// /////////////////////////////////////////////////
