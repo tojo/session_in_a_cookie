@@ -43,8 +43,8 @@ public class SessionInACookieDefaultImplTest extends SessionInACookieBaseTest {
 	@Test
 	public void testEncryptAndSignRoundtrip() throws CipherStrategyException,
 			Exception {
-		byte[] cookieValue = sut
-				.encryptSignAndEncode(sampleSessionDataLoremIpsumAsBytes);
+		byte[] cookieValue = sut.encryptSignAndEncode(
+				sampleSessionDataLoremIpsumAsBytes).asBytes();
 		byte[] sessionData = sut.decodeDecryptAndVerifySignature(cookieValue);
 		assertTrue(Arrays.equals(sampleSessionDataLoremIpsumAsBytes,
 				sessionData));
@@ -58,15 +58,18 @@ public class SessionInACookieDefaultImplTest extends SessionInACookieBaseTest {
 
 	@Test
 	public void testNonce() throws CipherStrategyException {
-		String cookieValue1 = sut.encode(sampleSessionDataFooBarAsBytes);
-		String cookieValue2 = sut.encode(sampleSessionDataFooBarAsBytes);
+		String cookieValue1 = sut.encode(
+				new SessionData(sampleSessionDataFooBarAsBytes)).asString();
+		String cookieValue2 = sut.encode(
+				new SessionData(sampleSessionDataFooBarAsBytes)).asString();
 		assertNotEquals(cookieValue1, cookieValue2);
 	}
 
 	@Test
 	public void testRoundTrip() throws CipherStrategyException,
 			TimeoutException, SignatureException, BlacklistException {
-		String cookieValue = sut.encode(sampleSessionDataFooBarAsBytes);
+		CookieValue cookieValue = sut.encode(new SessionData(
+				sampleSessionDataFooBarAsBytes));
 		byte[] sessionData = sut.decode(cookieValue);
 		assertTrue(Arrays.equals(sampleSessionDataFooBarAsBytes, sessionData));
 	}

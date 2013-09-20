@@ -22,20 +22,51 @@
  */
 package com.github.tojo.session.cookies;
 
-public class TimeoutStrategyDefaultImpl implements TimeoutStrategy {
+import java.io.UnsupportedEncodingException;
 
-	@Override
-	public void issue(SessionData sessionData, CookieValue cookieValue) {
-		// noop
+/**
+ * Value object for the serialized session-in-a-cookie session data.
+ * 
+ * @author github.com/tojo
+ */
+public class SessionData implements ValueObject {
+
+	private byte[] sessionData;
+
+	/**
+	 * Constructor
+	 */
+	public SessionData() {
 	}
 
-	@Override
-	public void advance(CookieValue cookieValue) {
-		// noop
+	/**
+	 * Constructor
+	 * 
+	 * @param sessionData
+	 *            the serialized session-in-a-cookie session data
+	 */
+	public SessionData(byte[] sessionData) {
+		this.sessionData = sessionData;
 	}
 
+	/**
+	 * @return the serialized session-in-a-cookie session data converted in a
+	 *         UTF-8 string.
+	 */
 	@Override
-	public void expire(CookieValue cookieValue) {
-		// noop
+	public String asString() {
+		try {
+			return new String(sessionData, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new InitializationError(e);
+		}
+	}
+
+	/**
+	 * @return the serialized session-in-a-cookie session data
+	 */
+	@Override
+	public byte[] asBytes() {
+		return sessionData;
 	}
 }

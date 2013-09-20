@@ -22,20 +22,9 @@
  */
 package com.github.tojo.session.cookies;
 
-public class TimeoutStrategyDefaultImpl implements TimeoutStrategy {
+public interface ValueObject {
 
-	@Override
-	public void issue(SessionData sessionData, CookieValue cookieValue) {
-		// noop
-	}
+	String asString();
 
-	@Override
-	public void advance(CookieValue cookieValue) {
-		// noop
-	}
-
-	@Override
-	public void expire(CookieValue cookieValue) {
-		// noop
-	}
+	byte[] asBytes();
 }

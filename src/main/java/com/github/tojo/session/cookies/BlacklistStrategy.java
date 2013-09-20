@@ -37,7 +37,7 @@ public interface BlacklistStrategy {
 	 * @param cookieValue
 	 *            the session / cookie value to blacklist.
 	 */
-	void add(String cookieValue);
+	void add(CookieValue cookieValue);
 
 	/**
 	 * Check if a session / cookie value is blacklisted. If yes this method
@@ -49,5 +49,5 @@ public interface BlacklistStrategy {
 	 * @throws BlacklistException
 	 *             if the session is blacklisted.
 	 */
-	void check(String cookieValue) throws BlacklistException;
+	void check(CookieValue cookieValue) throws BlacklistException;
 }

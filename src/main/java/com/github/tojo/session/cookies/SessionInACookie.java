@@ -72,7 +72,7 @@ public abstract class SessionInACookie {
 	 * @throws CipherStrategyException
 	 *             if the session data couldn't be encrypted
 	 */
-	public abstract String encode(byte[] sessionData)
+	public abstract CookieValue encode(SessionData sessionData)
 			throws CipherStrategyException;
 
 	/**
@@ -95,8 +95,8 @@ public abstract class SessionInACookie {
 	 * @throws InvalidInputFormatException
 	 *             if the cookieValue is null or empty
 	 */
-	public abstract byte[] decode(String cookieValue) throws TimeoutException,
-			SignatureException, BlacklistException;
+	public abstract byte[] decode(CookieValue cookieValue)
+			throws TimeoutException, SignatureException, BlacklistException;
 
 	public CipherStrategy getCipherStrategy() {
 		return cipherStrategy;

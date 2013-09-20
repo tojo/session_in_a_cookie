@@ -30,12 +30,12 @@ package com.github.tojo.session.cookies;
 public class BlacklistStrategyDefaultImpl implements BlacklistStrategy {
 
 	@Override
-	public void add(String cookieValue) {
+	public void add(CookieValue cookieValue) {
 		// noop
 	}
 
 	@Override
-	public void check(String cookieValue) throws BlacklistException {
+	public void check(CookieValue cookieValue) throws BlacklistException {
 		// noop
 	}
 

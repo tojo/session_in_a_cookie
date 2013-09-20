@@ -59,21 +59,21 @@ public class SessionInACookieDefaultImpl extends SessionInACookie {
 	}
 
 	@Override
-	public String encode(byte[] sessionData) throws CipherStrategyException {
+	public CookieValue encode(SessionData sessionData)
+			throws CipherStrategyException {
 		try {
 			// 1. create session id
 			byte[] sessionId = UUID.randomUUID().toString().getBytes("UTF-8");
 
 			// 2. prefix session data with the session id
-			byte[] dataWithSessionId = ArrayUtils
-					.addAll(sessionId, sessionData);
+			byte[] dataWithSessionId = ArrayUtils.addAll(sessionId,
+					sessionData.asBytes());
 
 			// 3. calculate the cookie value
-			String cookieValue = new String(
-					encryptSignAndEncode(dataWithSessionId), "UTF-8");
+			CookieValue cookieValue = encryptSignAndEncode(dataWithSessionId);
 
 			// 4. hit timeout strategy
-			timeoutStrategy.issue(cookieValue);
+			timeoutStrategy.issue(sessionData, cookieValue);
 
 			return cookieValue;
 		} catch (UnsupportedEncodingException e) {
@@ -82,41 +82,37 @@ public class SessionInACookieDefaultImpl extends SessionInACookie {
 	}
 
 	@Override
-	public byte[] decode(String cookieValue) throws TimeoutException,
+	public byte[] decode(CookieValue cookieValue) throws TimeoutException,
 			SignatureException, BlacklistException {
 
-		try {
-			// 1. check blacklist
-			blacklistStrategy.check(cookieValue);
+		// 1. check blacklist
+		blacklistStrategy.check(cookieValue);
 
-			// 2. advance session timeout
-			timeoutStrategy.advance(cookieValue);
+		// 2. advance session timeout
+		timeoutStrategy.advance(cookieValue);
 
-			// 3. decode
-			byte[] dataWithSessionId;
-			dataWithSessionId = decodeDecryptAndVerifySignature(cookieValue
-					.getBytes("UTF-8"));
+		// 3. decode
+		byte[] dataWithSessionId;
+		dataWithSessionId = decodeDecryptAndVerifySignature(cookieValue
+				.asBytes());
 
-			// 4. extract the session id
-			byte[] sessionId = ArrayUtils.subarray(dataWithSessionId, 0,
-					SESSION_ID_LENGTH);
+		// 4. extract the session id
+		byte[] sessionId = ArrayUtils.subarray(dataWithSessionId, 0,
+				SESSION_ID_LENGTH);
 
-			// 5. extract the session data
-			byte[] sessionData = ArrayUtils.subarray(dataWithSessionId,
-					SESSION_ID_LENGTH, dataWithSessionId.length);
+		// 5. extract the session data
+		byte[] sessionData = ArrayUtils.subarray(dataWithSessionId,
+				SESSION_ID_LENGTH, dataWithSessionId.length);
 
-			// 3. return the session data
-			return sessionData;
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
+		// 3. return the session data
+		return sessionData;
 	}
 
 	// /////////////////////////////////////////////////
 	// non-public API
 	// /////////////////////////////////////////////////
 
-	byte[] encryptSignAndEncode(byte[] sessionData)
+	CookieValue encryptSignAndEncode(byte[] sessionData)
 			throws CipherStrategyException {
 		assertNotNullAndEmpty(sessionData);
 
@@ -131,7 +127,7 @@ public class SessionInACookieDefaultImpl extends SessionInACookie {
 
 		// return the encrypted, signed and base64 encoded session data as
 		// cookie value
-		return cookieValue;
+		return new CookieValue(cookieValue);
 	}
 
 	byte[] decodeDecryptAndVerifySignature(byte[] cookieValue)

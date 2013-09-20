@@ -35,11 +35,13 @@ public interface TimeoutStrategy {
 	 * Issues and initialize the timeout handling for the given session / cookie
 	 * value.
 	 * 
+	 * @param sessionData
+	 *            the original session data
 	 * @param cookieValue
 	 *            the session / cookie value for which the timeout handling
 	 *            infrastructure should be initialized
 	 */
-	void issue(String cookieValue);
+	void issue(SessionData sessionData, CookieValue cookieValue);
 
 	/**
 	 * Advance the session timeout.
@@ -50,7 +52,7 @@ public interface TimeoutStrategy {
 	 *             if the session couldn't advanced, e.g. because it is expired
 	 *             or not well-known.
 	 */
-	void advance(String cookieValue) throws TimeoutException;
+	void advance(CookieValue cookieValue) throws TimeoutException;
 
 	/**
 	 * Mark a session as expired.
@@ -58,5 +60,5 @@ public interface TimeoutStrategy {
 	 * @param cookieValue
 	 *            the session / cookie value which should be marked as expired
 	 */
-	void expire(String cookieValue);
+	void expire(CookieValue cookieValue);
 }
