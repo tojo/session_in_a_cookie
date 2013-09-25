@@ -24,6 +24,7 @@ package com.github.tojo.session.cookies;
 
 import static com.github.tojo.session.cookies.SessionInACookie.assertNotNullAndEmpty;
 
+import java.lang.reflect.Field;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -62,6 +63,21 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	 */
 	public CipherStrategyDefaultImpl(byte[] secret) {
 		super();
+
+		try {
+			Class<?> securityClass = java.lang.Class
+					.forName("javax.crypto.JceSecurity");
+			Field restrictedField = securityClass
+					.getDeclaredField("isRestricted");
+			restrictedField.setAccessible(true);
+			restrictedField.set(null, false);
+		} catch (ClassNotFoundException | NoSuchFieldException
+				| SecurityException | IllegalArgumentException
+				| IllegalAccessException e) {
+			throw new CipherStrategyException(
+					"Disable the crypto restriction programmatically faild!", e);
+		}
+
 		this.ivspec = new IvParameterSpec(ArrayUtils.subarray(UUID.randomUUID()
 				.toString().getBytes(), 0, 16));
 		;
