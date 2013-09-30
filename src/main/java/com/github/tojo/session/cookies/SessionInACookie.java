@@ -122,6 +122,7 @@ public abstract class SessionInACookie {
 	 * @return the default {@link SessionInACookie} object
 	 */
 	public static SessionInACookie getDefaultInstance(byte[] secret) {
+		// not multi-threading safe
 		if (instance == null) {
 			instance = new SessionInACookieDefaultImpl(
 					new CipherStrategyDefaultImpl(secret),
