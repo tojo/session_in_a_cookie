@@ -53,7 +53,9 @@ class SignatureStrategyDefaultImpl implements SignatureStrategy {
 	 * Constructor
 	 * 
 	 * @param secret
-	 *            shared secret for signing
+	 *            Secret/password for signing of the session data. The password
+	 *            must be at least 30 characters long and should contain special
+	 *            characters.
 	 */
 	public SignatureStrategyDefaultImpl(byte[] secret) {
 		try {

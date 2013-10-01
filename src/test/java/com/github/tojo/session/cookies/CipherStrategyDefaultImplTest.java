@@ -31,25 +31,43 @@ import org.junit.Test;
 public class CipherStrategyDefaultImplTest extends SessionInACookieBaseTest {
 
 	CipherStrategyDefaultImpl sut;
+	CipherStrategyDefaultImpl sut2;
 
 	@Before
 	public void setUp() throws Exception {
 		sut = new CipherStrategyDefaultImpl(secret);
+		sut2 = new CipherStrategyDefaultImpl(secret);
 	}
 
 	@Test
 	public void testCipher() throws Exception {
-		byte[] encryptedSessionData = sut.encipher(sampleSessionDataLoremIpsumAsBytes);
+		byte[] encryptedSessionData = sut
+				.encipher(sampleSessionDataLoremIpsumAsBytes);
 		assertNotNull(encryptedSessionData);
 	}
 
 	@Test
 	public void testCipherAndDecipherSessionData() throws Exception {
-		byte[] encryptedSessionData = sut.encipher(sampleSessionDataLoremIpsumAsBytes);
+		byte[] encryptedSessionData = sut
+				.encipher(sampleSessionDataLoremIpsumAsBytes);
 		byte[] sessionData = sut.decipher(encryptedSessionData);
 		assertNotNull(sessionData);
 		assertEquals(new String(sampleSessionDataLoremIpsumAsBytes, "UTF-8"),
 				new String(sessionData, "UTF-8"));
+	}
+
+	@Test
+	public void testMultiInstance() throws Exception {
+		byte[] encryptedSessionData = sut
+				.encipher(sampleSessionDataLoremIpsumAsBytes);
+		byte[] encryptedSessionData2 = sut2
+				.encipher(sampleSessionDataLoremIpsumAsBytes);
+		byte[] sessionData = sut.decipher(encryptedSessionData2);
+		byte[] sessionData2 = sut2.decipher(encryptedSessionData);
+		assertEquals(new String(sampleSessionDataLoremIpsumAsBytes, "UTF-8"),
+				new String(sessionData, "UTF-8"));
+		assertEquals(new String(sampleSessionDataLoremIpsumAsBytes, "UTF-8"),
+				new String(sessionData2, "UTF-8"));
 	}
 
 }

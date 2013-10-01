@@ -22,6 +22,7 @@
  */
 package com.github.tojo.session.cookies;
 
+import static com.github.tojo.session.cookies.SessionInACookie.assertMinLength;
 import static com.github.tojo.session.cookies.SessionInACookie.assertNotNullAndEmpty;
 
 import java.lang.reflect.Field;
@@ -30,7 +31,6 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -38,8 +38,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Default implementation of {@link CipherStrategy}.
@@ -51,6 +49,7 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	static final String AES_CTR_PKCS5PADDING = "AES/CTR/PKCS5PADDING";
 	static final String AES = "AES";
 	static final String SHA_256 = "SHA-256";
+	static final int IV_LENGTH = 16;
 
 	private final IvParameterSpec ivspec;
 	private final Key key;
@@ -59,10 +58,13 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 	 * Constructor
 	 * 
 	 * @param secret
-	 *            shared secret for en-/decryption
+	 *            Secret/password for encryption of the session data. The
+	 *            password must be at least 30 characters long and should
+	 *            contain special characters.
 	 */
 	public CipherStrategyDefaultImpl(byte[] secret) {
 		super();
+		assertMinLength(secret, IV_LENGTH);
 
 		try {
 			Class<?> securityClass = java.lang.Class
@@ -78,8 +80,7 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 					"Disable the crypto restriction programmatically faild!", e);
 		}
 
-		this.ivspec = new IvParameterSpec(ArrayUtils.subarray(UUID.randomUUID()
-				.toString().getBytes(), 0, 16));
+		this.ivspec = new IvParameterSpec(secret, 0, IV_LENGTH);
 		;
 		try {
 			this.key = buildKey(secret, AES);
