@@ -40,7 +40,9 @@ public abstract class SessionInACookie {
 	 * Constructor
 	 * 
 	 * @param secret
-	 *            shared secret for en-/decryption
+	 *            Secret/password for encryption and signing of the session
+	 *            data. The password must be at least 30 characters long and
+	 *            should contain special characters.
 	 * @param iv
 	 *            initial vector for en-/decryption
 	 * @param cipherStrategy
@@ -118,7 +120,9 @@ public abstract class SessionInACookie {
 	 * Get the default {@link SessionInACookie} implementation object.
 	 * 
 	 * @param secret
-	 *            the shared secret for en- and decryption.
+	 *            Secret/password for encryption and signing of the session
+	 *            data. The password must be at least 30 characters long and
+	 *            should contain special characters.
 	 * @return the default {@link SessionInACookie} object
 	 */
 	public static SessionInACookie getDefaultInstance(byte[] secret) {
@@ -137,7 +141,9 @@ public abstract class SessionInACookie {
 	 * Get the default {@link SessionInACookie} implementation object.
 	 * 
 	 * @param secret
-	 *            the shared secret for en- and decryption.
+	 *            Secret/password for encryption and signing of the session
+	 *            data. The password must be at least 30 characters long and
+	 *            should contain special characters.
 	 * @param timeoutStrategy
 	 * @param blacklistStrategy
 	 * @return the default {@link SessionInACookie} object
