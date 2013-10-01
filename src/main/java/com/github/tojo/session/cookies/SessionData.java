@@ -23,6 +23,7 @@
 package com.github.tojo.session.cookies;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 
 /**
  * Value object for the serialized session-in-a-cookie session data.
@@ -68,5 +69,27 @@ public class SessionData implements ValueObject {
 	@Override
 	public byte[] asBytes() {
 		return sessionData;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(sessionData);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SessionData other = (SessionData) obj;
+		if (!Arrays.equals(sessionData, other.sessionData))
+			return false;
+		return true;
 	}
 }

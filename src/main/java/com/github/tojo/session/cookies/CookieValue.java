@@ -78,4 +78,30 @@ public class CookieValue implements ValueObject {
 			throw new InitializationException(e);
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((cookieValue == null) ? 0 : cookieValue.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CookieValue other = (CookieValue) obj;
+		if (cookieValue == null) {
+			if (other.cookieValue != null)
+				return false;
+		} else if (!cookieValue.equals(other.cookieValue))
+			return false;
+		return true;
+	}
 }
