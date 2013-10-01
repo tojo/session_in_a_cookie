@@ -41,6 +41,7 @@ public interface TimeoutStrategy {
 	 *            the session / cookie value for which the timeout handling
 	 *            infrastructure should be initialized
 	 */
+	 // do you have an example for an implementation of this that does more than noop?
 	void issue(SessionData sessionData, CookieValue cookieValue);
 
 	/**

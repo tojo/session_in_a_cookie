@@ -27,6 +27,7 @@ package com.github.tojo.session.cookies;
  * 
  * @author github.com/tojo
  */
+ // why is this an Error and not an Exception
 public class InitializationError extends Error {
 
 	private static final long serialVersionUID = 1L;

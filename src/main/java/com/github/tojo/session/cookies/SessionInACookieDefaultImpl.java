@@ -63,6 +63,7 @@ public class SessionInACookieDefaultImpl extends SessionInACookie {
 			throws CipherStrategyException {
 		try {
 			// 1. create session id
+			// is this as secure as using SecureRandom? if not sure, better use SecureRandom
 			byte[] sessionId = UUID.randomUUID().toString().getBytes("UTF-8");
 
 			// 2. prefix session data with the session id
