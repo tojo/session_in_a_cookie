@@ -148,8 +148,9 @@ public abstract class SessionInACookie {
 	 * @param blacklistStrategy
 	 * @return the default {@link SessionInACookie} object
 	 */
-	public static SessionInACookie getDefaultInstance(byte[] secret,
-			TimeoutStrategy timeoutStrategy, BlacklistStrategy blacklistStrategy) {
+	public synchronized static SessionInACookie getDefaultInstance(
+			byte[] secret, TimeoutStrategy timeoutStrategy,
+			BlacklistStrategy blacklistStrategy) {
 		if (instance == null) {
 			instance = new SessionInACookieDefaultImpl(
 					new CipherStrategyDefaultImpl(secret),

@@ -59,7 +59,7 @@ class SignatureStrategyDefaultImpl implements SignatureStrategy {
 		try {
 			this.key = buildKey(secret, HMAC_SHA256);
 		} catch (NoSuchAlgorithmException e) {
-			throw new InitializationError(e);
+			throw new InitializationException(e);
 		}
 	}
 
@@ -73,7 +73,7 @@ class SignatureStrategyDefaultImpl implements SignatureStrategy {
 			mac.init(key);
 			signature = mac.doFinal(sessionData);
 		} catch (NoSuchAlgorithmException | InvalidKeyException e) {
-			throw new InitializationError(e);
+			throw new InitializationException(e);
 		}
 
 		byte[] signedSessionData = ArrayUtils.addAll(signature, sessionData);

@@ -22,8 +22,9 @@
  */
 package com.github.tojo.session.cookies;
 
-import java.io.UnsupportedEncodingException;
-import java.util.UUID;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ArrayUtils;
@@ -63,8 +64,10 @@ public class SessionInACookieDefaultImpl extends SessionInACookie {
 			throws CipherStrategyException {
 		try {
 			// 1. create session id
-			// is this as secure as using SecureRandom? if not sure, better use SecureRandom
-			byte[] sessionId = UUID.randomUUID().toString().getBytes("UTF-8");
+			SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG",
+					"SUN");
+			byte[] sessionId = new byte[SESSION_ID_LENGTH];
+			secureRandom.nextBytes(sessionId);
 
 			// 2. prefix session data with the session id
 			byte[] dataWithSessionId = ArrayUtils.addAll(sessionId,
@@ -77,7 +80,7 @@ public class SessionInACookieDefaultImpl extends SessionInACookie {
 			timeoutStrategy.issue(sessionData, cookieValue);
 
 			return cookieValue;
-		} catch (UnsupportedEncodingException e) {
+		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
 			throw new RuntimeException(e);
 		}
 	}

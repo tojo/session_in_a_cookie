@@ -27,41 +27,40 @@ package com.github.tojo.session.cookies;
  * 
  * @author github.com/tojo
  */
- // why is this an Error and not an Exception
-public class InitializationError extends Error {
+public class InitializationException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs a {@code InitializationError} with no detail message.
+	 * Constructs a {@code InitializationException} with no detail message.
 	 */
-	public InitializationError() {
+	public InitializationException() {
 		super();
 	}
 
 	/**
-	 * Constructs a {@code InitializationError} with the specified detail
+	 * Constructs a {@code InitializationException} with the specified detail
 	 * message.
 	 * 
 	 * @param s
 	 *            the detail message.
 	 */
-	public InitializationError(String s) {
+	public InitializationException(String s) {
 		super(s);
 	}
 
 	/**
-	 * Constructs a {@code InitializationError} with the specified cause.
+	 * Constructs a {@code InitializationException} with the specified cause.
 	 * 
 	 * @param cause
 	 *            the cause
 	 */
-	public InitializationError(Throwable cause) {
+	public InitializationException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * Constructs a {@code InitializationError} with the specified detail
+	 * Constructs a {@code InitializationException} with the specified detail
 	 * message and cause.
 	 * 
 	 * @param s
@@ -69,7 +68,7 @@ public class InitializationError extends Error {
 	 * @param cause
 	 *            the cause
 	 */
-	public InitializationError(String message, Throwable cause) {
+	public InitializationException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

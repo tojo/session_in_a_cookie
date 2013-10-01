@@ -54,7 +54,7 @@ public class CookieValue implements ValueObject {
 		try {
 			this.cookieValue = new String(cookieValue, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			throw new InitializationError(e);
+			throw new InitializationException(e);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class CookieValue implements ValueObject {
 		try {
 			return cookieValue.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			throw new InitializationError(e);
+			throw new InitializationException(e);
 		}
 	}
 }

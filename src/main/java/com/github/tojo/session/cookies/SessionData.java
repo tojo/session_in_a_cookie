@@ -58,7 +58,7 @@ public class SessionData implements ValueObject {
 		try {
 			return new String(sessionData, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			throw new InitializationError(e);
+			throw new InitializationException(e);
 		}
 	}
 

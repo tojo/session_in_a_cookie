@@ -84,7 +84,7 @@ class CipherStrategyDefaultImpl implements CipherStrategy {
 		try {
 			this.key = buildKey(secret, AES);
 		} catch (NoSuchAlgorithmException e) {
-			throw new InitializationError(e);
+			throw new InitializationException(e);
 		}
 	}
 
